@@ -1,0 +1,13 @@
+    ####    ####      ##                        JJJ  SSSS
+   ## ##   ##  ##    ####  ##           ####     JJ SS 
+  ##  ##  ##    ##    ##       ##   ## ######    JJ  SSS 
+ ##   ## ##########   ##   ##   ## ##  ##     JJ JJ    SS
+##    ####        ##   ##  ##    ###    ####   JJJ  SSSS 
+
+--- Native.js ---
+
+Functional extensions to the JavaScript language.
+
+-----------------
+
+This Library started as an extension to the Prototype-Framework (www.prototypejs.org)
