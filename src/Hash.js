@@ -14,5 +14,9 @@ Object.extend(Hash.prototype, {
     var hash = this;
     this.keys().each(function(k) { if (f(k)) re.set(k, hash.get(k)) });
     return re;
+  },
+  put: function(key, value) {
+    this.set(key, value);
+    return this;
   }
 });
