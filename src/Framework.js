@@ -51,6 +51,10 @@ Native = {
         Native.require(path+include+'.js') 
       });
     });
+  },
+  
+  ready: function(callback, scope) {
+    window.addEvent('domready', callback);
   }
 };
 
@@ -71,9 +75,3 @@ $if = function() {
   var fn = args.shift() || Prototype.K
   if (condition) return fn.apply(condition, args) 
 }
-
-//
-// load additional script resources
-Native.load();
-//
-//

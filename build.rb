@@ -15,8 +15,23 @@ files = Dir.new(src_dir).entries.select { |f| f =~ /.*\.js/ }
 
 basic_name = 'Basic.js'
 
-files.reject! { |name| name == basic_name }
-files.unshift basic_name
+start_files = %w(
+  Basic 
+  Framework 
+  Function 
+  Math 
+  Number 
+  Array 
+  Enumerable 
+  String 
+  Interval 
+  TimeInterval
+  Finish
+)
+start_files.map! { |n| n + '.js' }
+
+files.reject! { |name| start_files.any? { |sf| sf == name } }
+start_files.reverse.each { |name| files.unshift name }
 
 out = File.open(build_dir + '/' + build_name + '.js', 'w')
 

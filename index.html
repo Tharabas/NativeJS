@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>NativeJS Test Page</title>
+    <style type="text/css">
+      body {
+        background-color: black;
+        color: white;
+      }
+      
+      #repl_input, #repl_output {
+        font-family: Monaco, 'Courier New';
+        font-size: 11pt;
+        background-color: black;
+        color: lime;
+      }
+      
+      #repl_input {
+        border: none;
+        width: 100%;
+      }
+    </style>
+    <script type="application/javascript" src="build/native.js"></script>
+    <script>
+/* <![CDATA[ */
+document.onload = function() {
+  $ = document.getElementById;
+  $('repl_input').focus();
+}
+/* ]]> */
+    </script>
+  </head>
+  <body>
+    <div align="center">
+      <pre>
+
+    ####    ####      ##                        JJJ  SSSS
+   ## ##   ##  ##    ####  ##           ####     JJ SS   
+  ##  ##  ##    ##    ##       ##   ## ######    JJ  SSS 
+ ##   ## ##########   ##   ##   ## ##  ##     JJ JJ    SS
+##    ####        ##   ##  ##    ###    ####   JJJ  SSSS 
+
+      </pre>
+    </div>
+    <h1>NativeJS - JavaScript Library</h1>
+    <div id="repl_output">
+      
+    </div>
+    <input id="repl_input" />
+  </body>
+</html>
