@@ -345,6 +345,7 @@ var Class = (function() {
 
   extend(Object, {
     extend:        extend,
+    overwrite:     overwrite,
     inspect:       inspect,
     toJSON:        NATIVE_JSON_STRINGIFY_SUPPORT ? stringify : toJSON,
     toQueryString: toQueryString,

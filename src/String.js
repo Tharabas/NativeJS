@@ -13,18 +13,26 @@ Object.extend(String, {
       return String.rot13_upper[(i + 13) % 26];
     }
     return c;
+  },
+  fn: function() {
+    var args = $A(arguments);
+    var def  = args.shift();
+    var fn = Math.ident;
+    
+    // depending on the def ... create a function
+    
+    return args.length ? fn.apply(window, args) : fn; 
   }
 });
 
-Object.extend(String.prototype, {
-  apply: function() { 
-    var args    = $A(arguments)
-    var context = args.shift()
-    var fn      = context[this] || Math.ident
-    return fn.apply(context, args)
+Object.overwrite(String, {
+  fn: String.fn.methodize(),
+  apply: function(context, args) { 
+    var fn = context[this + ''] || this.fn();
+    return fn.apply(context, args);
   },
   call: function(context, value, index) {
-    try { return value[this + ''] } catch (ex) { } return undefined;
+    try { return value[this + '']; } catch (ex) { }
   },
   each: function(f, context) {
     f = f || Math.ident;

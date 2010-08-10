@@ -118,10 +118,6 @@ Object.extend(Math, {
 		return !(one & two);
 	},
 	
-	not: function(value) {
-		return !value;
-	},
-	
 	equal: function(one, two) {
     return one == two;
   },
@@ -295,4 +291,9 @@ $H(Math).each(function(m) {
 });
 $w('abs acos asin atan ceil cos exp floor log max min pow round sin sqrt tan').each(function(n) {
   Number.prototype[n] = Math[n].methodize();
+});
+$w('sum sub mul div pow rpow and or xor nor nand equal identical').each(function(n) {
+  Number.prototype['_' + n] = function() {
+    return Math[n].curry(this);
+  }
 });
