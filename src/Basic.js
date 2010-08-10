@@ -188,9 +188,17 @@ var Class = (function() {
   }
 
   function extend(destination, source) {
-    for (var property in source)
+    for (var property in source) {
       destination[property] = source[property];
+    }
     return destination;
+  }
+  
+  function overwrite(destination, source) {
+    for (var property in source) {
+      destination.prototype[property] = source[property];
+    }
+    return destination
   }
 
   function inspect(object) {
@@ -431,7 +439,6 @@ Object.extend(Function.prototype, (function() {
     bindAsEventListener: bindAsEventListener,
     curry:               curry,
     delay:               delay,
-    defer:               defer,
     wrap:                wrap,
     methodize:           methodize
   }
