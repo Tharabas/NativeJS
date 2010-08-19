@@ -275,8 +275,8 @@ Object.extend(Math, {
   /**
    * @return String the HEX Value of this Number
    */
-  toHex: function(number) {
-  	return number.toString(16).toUpperCase();
+  toHex: function(number, digits) {
+  	return number.toPaddedString(digits || 0, 16).toUpperCase();
   },
   /**
    * @return String the Binary value of this Number
