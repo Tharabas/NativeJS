@@ -34,7 +34,11 @@ Object.extend(Array.prototype, {
   },
   
   /**
-   * Returns array values for each object
+   * Will return an object with key value pairs containing arrays of objects where the key
+   * is the outcome of calling the iterator function
+   *
+   * ['Peter', 'Paul', 'Mary'].groupBy('length') 
+   * => { '5': ['Peter'], '4' => ['Paul', 'Mary'] }
    */
   groupBy: function(iterator, context) {
     var re = {}
@@ -48,8 +52,12 @@ Object.extend(Array.prototype, {
     return re;
   },
   
-  /** shortcut for groupBy, tbd */
-  by: function(iterator, context) { return this.groupBy(iterator, context) },
+  /**
+   * Will return only an array (instead of an object) grouped by the result of the iterator
+   * 
+   * ['Peter', 'Paul', 'Mary'].by('length') => [['Peter'], ['Paul', 'Mary']]
+   */
+  by: function(iterator, context) { return $H(this.groupBy(iterator, context)).values() },
   
   /**
    * Splits this array into two arrays at a given index
@@ -99,40 +107,48 @@ Object.extend(Array.prototype, {
     }
     return this[n];
   },
+  
   /**
-   * simple reduce (left) method
+   * simple reduce left method
    * calls the passed function on the first two elements of this array
    * the result temporarily replaces those two
    * in case there is only one value left it will be returned
    *
    * empty arrays will return undefined, be aware of that
    */
-  reduce: function(f) {
+  reduceLeft: function(fn, context) {
     // non recursive implementation
     if (!this.length) {
       return undefined;
     }
-    f = f || Prototype.K;
+    fn = fn || Prototype.K;
     var re = this[0];
-    if (Object.isArray(f)) {
+    if (Object.isArray(fn)) {
       for (var i = 1; i < this.length; i++) {
         var v = this[i];
-        re = f[i % f.length](re, v);
+        re = fn[i % fn.length].apply(context, [re, v]);
       }
     } else {
       for (var i = 1; i < this.length; i++) {
         var v = this[i];
-        re = f(re, v);
+        re = fn.apply(context, [re, v]);
       }
     }
     return re;
   },
+
+  /**
+   * forwards to reduceLeft
+   */
+  reduce: function(fn, context) {
+    return this.reduceLeft(fn, context);
+  },
   
   /**
-   * fold right
+   * reduce right
    */
-  reduceRight: function(f) {
-    return this.copy().reverse().reduce(f);
+  reduceRight: function(fn, context) {
+    return this.copy().reverse().reduce(fn, context);
   },
   
   /**
@@ -190,6 +206,18 @@ Object.extend(Array.prototype, {
       index += this.length 
     }
     return this[index % this.length];
+  },
+  
+  first: function(defaultValue) {
+    return this.get(0, defaultValue);
+  },
+  
+  second: function(defaultValue) {
+    return this.get(1, defaultValue);
+  },
+  
+  last: function(defaultValue) {
+    return this.get(this.length - 1, defaultValue);
   },
   
   /**
