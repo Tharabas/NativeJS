@@ -26,11 +26,32 @@ Object.extend(Array.prototype, {
     var f = this[index % this.length] || Prototype.K;
     return f.call(context, value, index);
   },
+  
+  /**
+   * Applies this array on a given function,
+   * a context may be passed
+   */
+  on: function(fn, ctx) {
+    return fn.apply(ctx, this);
+  },
+  
   /**
    * Simple shortcut for slice(0) on this array
    */
   copy: function() {
     return this.slice(0);
+  },
+  
+  shifted: function(n) {
+    var a = this.copy(); 
+    for (var i = (n || 1).max(1); i > 0; i--) a.shift(); 
+    return a;
+  },
+  
+  popped: function(n) {
+    var a = this.copy();
+    for (var i = (n || 1).max(1); i > 0; i--) a.pop();
+    return a;
   },
   
   /**
@@ -151,6 +172,14 @@ Object.extend(Array.prototype, {
     return this.copy().reverse().reduce(fn, context);
   },
   
+  foldLeft: function(start, fn, context) {
+    return [start].concat(this).reduceLeft(fn, context);
+  },
+  
+  foldRight: function(start, fn, context) {
+    return [start].concat(this).reduceRight(fn, context);
+  },
+  
   /**
    * String Function shortcut for this.join("");
    */
@@ -168,19 +197,31 @@ Object.extend(Array.prototype, {
     return this;
   },
     
-  indexOf: function(compare, start) {
-    if (Object.isUndefined(start)) {
-      start = -1;
+  //
+  // Apparently indexOf has already been defined,
+  // maybe rename & reuse this one
+  //
+  
+  // indexOf: function(compare, start) {
+  //   if (Object.isUndefined(start)) {
+  //     start = -1;
+  //   }
+  //   var idx = -1;
+  //   this.each(function(v, i) {
+  //     if (i > start && Object.isFunction(compare) ? compare(v, i) : compare == v) {
+  //       idx = i;
+  //       throw $break;
+  //     }
+  //   });
+  // 
+  //   return idx;
+  // },
+  
+  get: function(index, defaultValue) {
+    if (index < 0 || index >= this.length) {
+      return defaultValue;
     }
-    var idx = -1;
-    this.each(function(v, i) {
-      if (i > start && Object.isFunction(compare) ? compare(v, i) : compare == v) {
-        idx = i;
-        throw $break;
-      }
-    });
-
-    return idx;
+    return this[index];
   },
   
   after: function(compare, defaultValue) {
@@ -189,13 +230,6 @@ Object.extend(Array.prototype, {
   
   before: function(compare, defaultValue) {
     return this.get(this.indexOf(compare) - 1, defaultValue);
-  },
-  
-  get: function(index, defaultValue) {
-    if (index < 0 || index >= this.length) {
-      return defaultValue;
-    }
-    return this[index];
   },
   
   modget: function(index, defaultValue) {
