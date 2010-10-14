@@ -34,6 +34,24 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Returns array values for each object
+   */
+  groupBy: function(iterator, context) {
+    var re = {}
+    this.each(function(o, n) {
+      // ensure the result to be a string for processing
+      var key = iterator.apply(context || this, [o, n]) + '';
+      var arr = re[key] || [];
+      arr.push(o);
+      re[key] = arr;
+    })
+    return re;
+  },
+  
+  /** shortcut for groupBy, tbd */
+  by: function(iterator, context) { return this.groupBy(iterator, context) },
+  
+  /**
    * Splits this array into two arrays at a given index
    *
    * @returns array containing two arrays
