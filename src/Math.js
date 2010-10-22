@@ -283,7 +283,22 @@ Object.extend(Math, {
    */
   toBinary: function(number) {
   	return number.toString(2);
-  }  
+  },
+  
+  /**
+   * Returns the "behind the comma" value of a number
+   */
+  tail: function(number) {
+    return number - Math.floor(number);
+  },
+  
+  /**
+   * Returns an array containing the floor and tail value of a number
+   */
+  split: function(number) {
+    var floored = Math.floor(number);
+    return [floored, number - floored];
+  }
 });
 
 $H(Math).each(function(m) { 
