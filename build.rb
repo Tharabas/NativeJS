@@ -33,16 +33,42 @@ start_files.map! { |n| n + '.js' }
 files.reject! { |name| start_files.any? { |sf| sf == name } }
 start_files.reverse.each { |name| files.unshift name }
 
-out = File.open(build_dir + '/' + build_name + '.js', 'w')
+build_file_name = build_dir + '/' + build_name + '.js'
+
+out = File.open(build_file_name, 'w')
+
+gitlog = `git log -n1`.split("\n")
+build  = gitlog[0].split(" ")[1]
+date   = gitlog[2][8,24]
+
+puts "Building #{build_name}.js in #{build_dir}"
+
+# write header
+out.puts <<-HEADER
+/**
+ * NativeJS, JavaScript Extensions
+ * Build: #{build}
+ * Date:  #{date}
+ *
+ * Copyright (c) 2001-2010 Ben Schuettler (Tharabas)
+ */
+HEADER
 
 files.each { |filename|
-  file = File.open(src_dir + '/' + filename, 'r') 
-  puts "Appending #{File.size(file)} bytes from #{filename}"
-  #out.puts "// START #{filename}"
+  fullPath = src_dir + '/' + filename
+  file = File.open(fullPath, 'r') 
+  filelog = `git log -n1 #{fullPath}`
+  puts "+ #{filename.reverse[3,50].reverse} (#{File.size(file)} bytes)"
+  out.puts <<-FILEHEAD
+  /**
+   * Name:    #{filename}
+   * Version: #{filelog[2][8,24]}
+   */
+  FILEHEAD
   
   file.each_line { |line| out.puts(line) }
-    
-  #out.puts "// END #{filename}\n"
 }
 
 out.close
+
+puts "--- DONE ---"
