@@ -27,6 +27,21 @@ Object.extend(Array.prototype, {
     return f.call(context, value, index);
   },
   
+  fill: function(args) {
+    if (!Object.isArray(args)) {
+      return this.fill($A(arguments))
+    }
+    var re  = this.clone(),
+        max = this.length.max(args.length)
+    
+    for (var i = 0; i < max; i++) {
+      if (this[i] === undefined) {
+        re[i] = args.shift()
+      }
+    }
+    return re.concat(args)
+  },
+  
   /**
    * Applies this array on a given function,
    * a context may be passed

@@ -35,6 +35,19 @@ Object.extend(Function.prototype, {
 	},
 	
 	/**
+	 * A partial apply method ... still have to name it
+	 */
+	_: function() {
+	  if (!arguments.length) return this;
+    var __method = this, pargs = $A(arguments)
+    return function() {
+      // fill the given arguments with the predefined passArgs
+      var a = pargs.fill($A(arguments))
+      return __method.apply(this, a);
+    }
+	},
+	
+	/**
 	 * calls the given methods on arguments passed before executing the function
 	 * 
 	 * Example:

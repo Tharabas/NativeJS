@@ -58,6 +58,13 @@ Native = {
   }
 };
 
+// undefined shortcut for cleaner (scala-ish code)
+try {
+  if (Object.isUndefined(_)) { _ = undefined }
+} catch (ex) {
+  _ = undefined;
+}
+
 /**
  * $if pseudo macro for conditional execution
  *
