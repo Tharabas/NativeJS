@@ -53,6 +53,11 @@ Object.overwrite(String, {
   rot13: function() {
     return this.toArray().map(String.rot13c).glue();
   },
+  asKey: function(v) {
+    var re = {}
+    re[this] = v
+    return re
+  },
   contains: function(needle) {
     // ... the eternal void is part of everything ...
     if (!needle) { return true }
@@ -70,9 +75,7 @@ Object.overwrite(String, {
     var n = 0;
     var pos = -1;
     
-    while ((pos = this.indexOf(needle, pos + 1)) != -1) {
-      n++;
-    } 
+    while ((pos = this.indexOf(needle, pos + 1)) != -1) { n++ } 
     
     return n;
   },
@@ -81,6 +84,13 @@ Object.overwrite(String, {
    */
   cutoff: function(length) {
   	return this.substring(0, this.length - length);
+  },
+  
+  /**
+   * Shrinks a String on both sides
+   */
+  shrink: function(length) {
+    return this.substring(length || 1, this.length - (length || 1));
   },
   
   /**
