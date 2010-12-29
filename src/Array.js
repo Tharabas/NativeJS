@@ -96,6 +96,57 @@ Object.extend(Array.prototype, {
   by: function(iterator, context) { return $H(this.groupBy(iterator, context)).values() },
   
   /**
+   * Similar to each but executes each step with a delay
+   * For visual FX this gives a cascading effect
+   */
+  eachAfter: function(delay, iterator, context) {
+    var index = 0
+    this._each(function(value) {
+      var i = index;
+      (function() { iterator.call(context, value, i) }).delay(index * delay)
+      index++;
+    })
+    return this;
+  },
+
+  /**
+   * Similar to each, but executes each step with a delay
+   * The whole execution will be started equally distributed over the given duration
+   */
+  eachOver: function(duration, iterator, context) {
+    if (this.length == 0) return this;
+    if (duration < 25) duration *= 1000
+    return this.eachAfter(duration / this.length / 1000, iterator, context)
+  },
+
+  /**
+   *
+   */
+  invokeAfter: function() {
+    var args = $A(arguments)
+    var delay = args.shift()
+    var methodName = args.shift()
+    var index = 0
+    return this.map(function(value) {
+      return (function() { 
+        return value[methodName].apply(value, args) 
+      }).delay(delay * index++)
+    })
+  },
+  
+  /**
+   *
+   */
+  invokeOver: function() {
+    var args = $A(arguments)
+    var duration = args.shift()
+    if (this.length == 0) return this;
+    if (duration < 25) duration *= 1000
+    var delay = duration / this.length / 1000
+    return this.invokeAfter.apply(this, [delay].concat(args))
+  },
+  
+  /**
    * Splits this array into two arrays at a given index
    *
    * @returns array containing two arrays
@@ -187,12 +238,25 @@ Object.extend(Array.prototype, {
     return this.copy().reverse().reduce(fn, context);
   },
   
+  /**
+   * Basically a reduceLeft with a given start
+   */
   foldLeft: function(start, fn, context) {
     return [start].concat(this).reduceLeft(fn, context);
   },
   
+  /**
+   * Basically a reduceRight with a given start (on the right edge)
+   */
   foldRight: function(start, fn, context) {
-    return [start].concat(this).reduceRight(fn, context);
+    return [].concat(this).concat(start).reduceRight(fn, context);
+  },
+  
+  /**
+   * FoldLefts a list of objects into one object
+   */
+  merge: function(into) {
+    return this.foldLeft(into || {}, Object.extend)
   },
   
   /**
