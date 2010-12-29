@@ -51,12 +51,32 @@ Native = {
         Native.require(path+include+'.js') 
       });
     });
-  },
-  
-  ready: function(callback, scope) {
-    window.addEvent('domready', callback);
   }
 };
+
+(function() {
+  var readyFunctions = [];
+  Native.ready = function(f, ctx) {
+    readyFunctions.push(f.bind(ctx))
+  }
+  
+  Event.observe(document, 'dom:loaded', function(e) {
+    readyFunctions.each(function(f) { f.apply(window, [e]) });
+    // replace the ready with direct execution
+    Native.ready = function(f, ctx) { f.apply(ctx, []) }
+  })
+  
+  var loadFunctions = [];
+  Native.onload = function(f, ctx) {
+    loadFunctions.push(f.bind(ctx))
+  }
+  
+  Event.observe(window, 'load', function(e) {
+    loadFunctions.each(function(f) { f.apply(window, [e]) });
+    // replace the onload with direct execution
+    Native.onload = function(f, ctx) { f.apply(ctx, []) }
+  })
+})();
 
 // undefined shortcut for cleaner (scala-ish code)
 try {
