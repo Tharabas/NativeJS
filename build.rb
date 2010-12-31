@@ -50,7 +50,7 @@ out.puts <<-HEADER
  * Build: #{build}
  * Date:  #{date}
  *
- * Copyright (c) 2001-2010 Ben Schuettler (Tharabas)
+ * Copyright (c) 2001-2011 Ben Schuettler (Tharabas)
  */
 HEADER
 
@@ -58,7 +58,7 @@ files.each { |filename|
   fullPath = src_dir + '/' + filename
   file = File.open(fullPath, 'r') 
   filelog = `git log -n1 #{fullPath}`
-  puts "+ #{filename.reverse[3,50].reverse} (#{File.size(file)} bytes)"
+  puts "+ #{filename.reverse[3,50].reverse} (#{File.size(file)} bytes), #{filelog[2][8,24]}"
   out.puts <<-FILEHEAD
   /**
    * Name:    #{filename}

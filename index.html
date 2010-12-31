@@ -3,49 +3,82 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>NativeJS Test Page</title>
     <style type="text/css">
-      body {
-        background-color: black;
-        color: white;
-      }
-      
-      #repl_input, #repl_output {
-        font-family: Monaco, 'Courier New';
-        font-size: 11pt;
-        background-color: black;
-        color: lime;
-      }
-      
-      #repl_input {
-        border: none;
-        width: 100%;
-      }
+body {
+  margin: 0px;
+  background-color: black;
+  color: white;
+}
+
+#repl_input, #repl_output {
+  font-family: Monaco, 'Courier New';
+  font-size: 11pt;
+  background-color: black;
+  color: lime;
+}
+
+#repl {
+  border: 1px solid white;
+  margin: 8px;
+  padding: 4px;
+}
+
+#repl_output {
+  min-height: 250px;
+}
+
+#repl_input {
+  border: none;
+  width: 100%;
+}
+
+#repl_input {
+  
+}
     </style>
     <script type="application/javascript" src="build/native.js"></script>
     <script>
 /* <![CDATA[ */
 document.onload = function() {
-  $ = document.getElementById;
+  //$ = document.getElementById;
   $('repl_input').focus();
+  var ctx = $('can').getContext('2d')
+  
+  ctx.fillStyle = "rgb(200,0,0)";
+  ctx.fillRect (10, 10, 55, 50);
+
+  ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+  ctx.fillRect (30, 30, 55, 50);
 }
 /* ]]> */
     </script>
   </head>
   <body>
     <div align="center">
-      <pre>
-
-    ####    ####      ##                        JJJ  SSSS
-   ## ##   ##  ##    ####  ##           ####     JJ SS   
-  ##  ##  ##    ##    ##       ##   ## ######    JJ  SSS 
- ##   ## ##########   ##   ##   ## ##  ##     JJ JJ    SS
-##    ####        ##   ##  ##    ###    ####   JJJ  SSSS 
-
-      </pre>
+      <canvas id="can" height="250" style="width: 100%;">
+        <pre>
+      //||      //\\                                             ||   //-\\ 
+     // ||     //  \\       ||   ||                              ||  ||   ||
+    //  ||    //    \\     \||\                    //--\\        ||  ||     
+   //   ||   //      \\     ||   ||  \\      //   //    \\       ||   \\-\\ 
+  //    ||  //--------\\    ||   ||   \\    //   ||-----||       ||       ||
+ //     || //          \\   ||   ||    \\  //     \\       ||    ||  ||   ||
+//      ||//            \\   \\  ||     \\//       \\--//   \\--//    \\-// 
+        </pre>
+      </canvas>
     </div>
     <h1>NativeJS - JavaScript Library</h1>
-    <div id="repl_output">
-      
+    <div id="repl">
+      <div id="repl_output">
+        > NativeJS - REPL
+      </div>
+      <div>
+        <table width="100%">
+          <tr>
+            <td id="repl_prefix"><!-- --></td>
+            <td width="100%"><input id="repl_input" /></td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <input id="repl_input" />
   </body>
 </html>
