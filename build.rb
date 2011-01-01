@@ -26,13 +26,23 @@ start_files = %w(
   String 
   Interval 
   TimeInterval
-  Finish
 )
+
+end_files = %w(Finish)
+
 start_files.map! { |n| n + '.js' }
+end_files.map!   { |n| n + '.js' }
 
-files.reject! { |name| start_files.any? { |sf| sf == name } }
+files.reject! { |name| 
+  start_files.any?  { |sf| sf == name } or end_files.any? { |ef| ef == name }
+}
+
+# add start_files at the front
 start_files.reverse.each { |name| files.unshift name }
+# append end files
+end_files.each { |name| files.push name }
 
+# grab a build name
 build_file_name = build_dir + '/' + build_name + '.js'
 
 out = File.open(build_file_name, 'w')
@@ -57,12 +67,13 @@ HEADER
 files.each { |filename|
   fullPath = src_dir + '/' + filename
   file = File.open(fullPath, 'r') 
-  filelog = `git log -n1 #{fullPath}`
-  puts "+ #{filename.reverse[3,50].reverse} (#{File.size(file)} bytes), #{filelog[2][8,24]}"
+  filelog = `git log -n1 #{fullPath}`.split("\n")
+  puts "+ #{filename.reverse[3,50].reverse} (#{File.size(file)} bytes)"
   out.puts <<-FILEHEAD
   /**
    * Name:    #{filename}
    * Version: #{filelog[2][8,24]}
+   * Comment: #{filelog[4].strip}
    */
   FILEHEAD
   
@@ -70,5 +81,8 @@ files.each { |filename|
 }
 
 out.close
+
+# try to min it
+#`jsmin #{build_file_name} > #{build_file_name.reverse[2,500].reverse + "min.js"}`
 
 puts "--- DONE ---"

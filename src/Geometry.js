@@ -470,6 +470,12 @@ function $D(w, h) {
 	if (w instanceof Rectangle) {
 	  return w.getSize();
 	}
+	if (w instanceof HTMLCanvasElement) {
+	  return new Dimensions(w.width, w.height)
+	}
+	if (w instanceof CanvasRenderingContext2D) {
+	  return new Dimensions(w.canvas.width, w.canvas.height)
+	}
   if (Object.isString(w) && !Object.isUndefined($(w))) {
     return $D($(w));
   }
