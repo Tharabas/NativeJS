@@ -43,6 +43,13 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Shortcut for map+compact
+   */
+  cmap: function(fn, ctx) {
+    return this.map(fn, ctx).compact()
+  },
+  
+  /**
    * Applies this array on a given function,
    * a context may be passed
    */
