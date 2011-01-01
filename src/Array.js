@@ -120,7 +120,12 @@ Object.extend(Array.prototype, {
   },
 
   /**
+   * Invokes a given Method (second argument) on each element of this array
+   * each with an additional delay (first argument)
    *
+   * @param float  delay      the delay for each consecutive call
+   * @param string methodName the name of a method to be called
+   * @param any...            additional arguments for the call
    */
   invokeAfter: function() {
     var args = $A(arguments)
@@ -135,7 +140,11 @@ Object.extend(Array.prototype, {
   },
   
   /**
-   *
+   * Similar to invokeAfter, just this time the full duration is given instead of a delay
+   * 
+   * @param float  duration   the time from calling the first to calling the last method
+   * @param string methodName the name of a method to be called
+   * @param any...            additional arguments for the call
    */
   invokeOver: function() {
     var args = $A(arguments)
@@ -144,55 +153,6 @@ Object.extend(Array.prototype, {
     if (duration < 25) duration *= 1000
     var delay = duration / this.length / 1000
     return this.invokeAfter.apply(this, [delay].concat(args))
-  },
-  
-  /**
-   * Splits this array into two arrays at a given index
-   *
-   * @returns array containing two arrays
-   */
-  splitAt: function(index) {
-    if (index >= this.length) {
-      return [this, []];
-    } else if (index < -this.length) {
-      return [[], this];
-    } else if (index < 0) {
-      index += this.length;
-    }
-    return [this.slice(0, index), this.slice(index, this.length)];
-  },
-  
-  /**
-   * Inserts some elements at a specified index
-   *
-   * @param index the index to split at
-   * @param ...   any following element will be inserted at that point
-   * @return a new array containing the result of the combined arrays
-   */
-  insert: function() {
-    var args = $A(arguments);
-    var index = args.shift();
-    var parts = this.splitAt(index);
-    return parts[0].concat(args).concat(parts[1]);
-  },
-  
-  /**
-   * returns the n-th element of this array
-   * allows a default value to be returned in case the item does not exist
-   * also allows negative values, that will be used fron the end of the array
-   * -1 specifies the last element
-   */
-  item: function(n, defaultValue) {
-    if (n < 0) {
-      n = this.length + n;
-    }
-    if (n < 0 || n >= this.length) {
-      if (Object.isDefined(defaultValue)) {
-        return defaultValue;
-      }
-      throw "Index out of Bounds: " + n + " is not within [0;" + (this.length - 1) + "]";
-    }
-    return this[n];
   },
   
   /**
@@ -253,6 +213,48 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Shuffles this array and returns it afterwards
+   * (destructive operation)
+   */
+  shuffle: function() {
+    var i, v, n
+    for (i = this.length - 1; i > 1; i--) {
+      // inlined swap with tmp
+      n = i.ran()
+      v = this[n]
+      this[n] = this[i]
+      this[i] = v
+    }
+    return this
+  },
+  
+  /**
+   * Returns a shuffeled copy of this array
+   */
+  shuffled: function() {
+    return this.copy().shuffle()
+  },
+  
+  /**
+   * Returns a random element from this array
+   */
+  random: function() {
+    if (this.length == 0) {
+      return undefined;
+    }
+    return this[this.length.decrease().ran()];
+  },
+  
+  /**
+   * Returns a random subset of this array
+   * 
+   * @param int length  the 
+   */
+  randomSubset: function(length, minimum) {
+    return this.shuffled().slice(0, length || this.length.ran().max(1))
+  },
+  
+  /**
    * FoldLefts a list of objects into one object
    */
   merge: function(into) {
@@ -267,6 +269,36 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Splits this array into two arrays at a given index
+   *
+   * @returns array containing two arrays
+   */
+  splitAt: function(index) {
+    if (index >= this.length) {
+      return [this, []];
+    } else if (index < -this.length) {
+      return [[], this];
+    } else if (index < 0) {
+      index += this.length;
+    }
+    return [this.slice(0, index), this.slice(index, this.length)];
+  },
+  
+  /**
+   * Inserts some elements at a specified index
+   *
+   * @param index the index to split at
+   * @param ...   any following element will be inserted at that point
+   * @return a new array containing the result of the combined arrays
+   */
+  insert: function() {
+    var args = $A(arguments);
+    var index = args.shift();
+    var parts = this.splitAt(index);
+    return parts[0].concat(args).concat(parts[1]);
+  },
+  
+  /**
    * exchanges two elements of this array by their indices
    */
   swap: function(one, another) {
@@ -275,27 +307,35 @@ Object.extend(Array.prototype, {
     this[one] = t;
     return this;
   },
-    
-  //
-  // Apparently indexOf has already been defined,
-  // maybe rename & reuse this one
-  //
   
-  // indexOf: function(compare, start) {
-  //   if (Object.isUndefined(start)) {
-  //     start = -1;
-  //   }
-  //   var idx = -1;
-  //   this.each(function(v, i) {
-  //     if (i > start && Object.isFunction(compare) ? compare(v, i) : compare == v) {
-  //       idx = i;
-  //       throw $break;
-  //     }
-  //   });
-  // 
-  //   return idx;
-  // },
+  /**
+   * returns the n-th element of this array
+   * allows a default value to be returned in case the item does not exist
+   * also allows negative values, that will be used fron the end of the array
+   * -1 specifies the last element
+   */
+  item: function(n, defaultValue) {
+    if (n < 0) {
+      n = this.length + n;
+    }
+    if (n < 0 || n >= this.length) {
+      if (Object.isDefined(defaultValue)) {
+        return defaultValue;
+      }
+      throw "Index out of Bounds: " + n + " is not within [0;" + (this.length - 1) + "]";
+    }
+    return this[n];
+  },
   
+  /**
+   * Returns the element at a given index
+   * In case the index is out of bounds a defaultValue may be returned
+   *
+   * This is the failsave brother method of item
+   *
+   * @param int index the index of the element
+   * @param any defaultValue (optional)
+   */
   get: function(index, defaultValue) {
     if (index < 0 || index >= this.length) {
       return defaultValue;
@@ -303,14 +343,23 @@ Object.extend(Array.prototype, {
     return this[index];
   },
   
+  /**
+   * 
+   */
   after: function(compare, defaultValue) {
     return this.get(this.indexOf(compare) + 1, defaultValue);
   },
   
+  /**
+   *
+   */
   before: function(compare, defaultValue) {
     return this.get(this.indexOf(compare) - 1, defaultValue);
   },
   
+  /**
+   *
+   */
   modget: function(index, defaultValue) {
     if (this.length == 0) {
       return defaultValue;
@@ -321,14 +370,23 @@ Object.extend(Array.prototype, {
     return this[index % this.length];
   },
   
+  /**
+   * Returns the first element of this Array or a given defaultValue
+   */
   first: function(defaultValue) {
     return this.get(0, defaultValue);
   },
   
+  /**
+   * Returns the second element of this Array or a given defaultValue
+   */
   second: function(defaultValue) {
     return this.get(1, defaultValue);
   },
   
+  /**
+   * Returns the last element of this Array or a given defaultValue
+   */
   last: function(defaultValue) {
     return this.get(this.length - 1, defaultValue);
   },
@@ -662,12 +720,5 @@ Object.extend(Array.prototype, {
   		}
   		return false;
   	}
-  },
-  
-  random: function() {
-    if (this.length == 0) {
-      return undefined;
-    }
-    return this[this.length.decrease().ran()];
   }
 });
