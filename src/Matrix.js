@@ -263,6 +263,27 @@ var Matrix = Class.create({
   },
   
   /**
+   * a async call of a function on each element of the matrix
+   */
+  each: function(fn, ctx) {
+    var s =  this.getSize(),
+        i =  0,
+        x = -1,
+        y = -1
+        
+    for (i; i < s; i++) {
+      if (i % this.width == 0) {
+        x = 0
+        y++
+      } else {
+        x++
+      }
+      fn.bind(ctx||window,this.data[i],x,y).delay(0.001)
+    }
+    return this
+  },
+  
+  /**
    * a functional mapping for all values in this matrix,
    * the arguments passed to the method are (sourceValue, x, y)
    */
@@ -288,7 +309,7 @@ var Matrix = Class.create({
   		} else {
   			x++;
   		}
-  		m.data[i] = method(this.data[i], x, y); 
+  		m.data[i] = method.apply(window, [this.data[i], x, y]); 
   	}
   	
   	return m;
