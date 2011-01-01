@@ -9,23 +9,32 @@
  * I'm currently working on a replacement or permission from the PrototypeJS Folks
  * to takeover only a part of their framework
  *
- * @version 1.4.0
+ * @version 1.4.4
  * @requires Basic
  */
  
 Native = {
-  Version: '1.4.0',
+  Version: '1.4.4',
   // the REQUIRED_PROTOTYPE is subjected to be removed
-  REQUIRED_PROTOTYPE: '1.6.1',
+  REQUIRED_PROTOTYPE: '1.7.0',
   
   //
-  // require and load are both lend from the famous script.aculo.us, thx @ Thomas Fuchs
+  // require and load are both inspired by the famous script.aculo.us, thx @ Thomas Fuchs
   //
   require: function(libraryName) {
-    try{
+    if (Object.isArray(libraryName)) {
+      libraryName.each(Native.require)
+      return;
+    }
+    
+    if (!(/^(https?:\/\/|\/).*/).test(libraryName)) {
+      libraryName = Native.path() + libraryName
+    }
+    
+    try {
       // inserting via DOM fails in Safari 2.0, so brute force approach
       document.write('<script type="text/javascript" src="'+libraryName+'"><\/script>');
-    } catch(e) {
+    } catch (ex) {
       // for xhtml+xml served content, fall back to DOM methods
       var script = document.createElement('script');
       script.type = 'text/javascript';
@@ -40,15 +49,16 @@ Native = {
     }).map('src');
   },
   
+  path: function() {
+    return this.includedScriptNames().cmap(/(.*)native\.js(\?.*)?$/).pluck(1)
+  },
+  
   load: function() {
-    var js = /native\.js(\?.*)?$/;
-    Native.includedScriptNames().findAll(function(s) {
-      return s.match(js);
-    }).each(function(s) {
-      var path = s.replace(js, '');
-      var includes = s.match(/\?.*load=([a-z\_\-,]*)/);
+    Native.includedScriptNames().cmap(/(.*)native\.js(\?.*)?$/).each(function(s) {
+      var path = s[1];
+      var includes = s[2].match(/\?.*load=([a-z\_\-\/,]*)/);
       (includes ? includes[1] : []).map(function(include) { 
-        Native.require(path+include+'.js') 
+        Native.require(path + include + '.js') 
       });
     });
   }
