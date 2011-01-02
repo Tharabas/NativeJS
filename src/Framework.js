@@ -71,7 +71,7 @@ Native = {
   }
   
   Event.observe(document, 'dom:loaded', function(e) {
-    readyFunctions.each(function(f) { f.apply(window, [e]) });
+    readyFunctions.eachAfter(0.001, function(f) { f.apply(window, [e]) });
     // replace the ready with direct execution
     Native.ready = function(f, ctx) { f.apply(ctx, []) }
   })
@@ -82,7 +82,7 @@ Native = {
   }
   
   Event.observe(window, 'load', function(e) {
-    loadFunctions.each(function(f) { f.apply(window, [e]) });
+    loadFunctions.eachAfter(0.001, function(f) { f.apply(window, [e]) });
     // replace the onload with direct execution
     Native.onload = function(f, ctx) { f.apply(ctx, []) }
   })
@@ -90,9 +90,11 @@ Native = {
 
 // undefined shortcut for cleaner (scala-ish code)
 try {
-  if (Object.isUndefined(_)) { _ = undefined }
+  if (Object.isUndefined(window._)) { 
+    window._ = undefined 
+  }
 } catch (ex) {
-  _ = undefined;
+  window._ = undefined;
 }
 
 /**
@@ -106,9 +108,28 @@ try {
  * Example:
  *   $if (element, 'show') // will call element.show() unless element is undefined
  */
-$if = function() { 
+function $if() { 
   var args = $A(arguments)
   var condition = args.shift()
   var fn = args.shift() || Prototype.K
   if (condition) return fn.apply(condition, args) 
+};
+
+// will throw either the first argument or the context
+function $throw(ex) {
+  throw ex || this
+};
+
+// this tiny method will yield an array in any case
+// kind of an option constructor here
+function $a() {
+  var args = $A(arguments).compact()
+  if (args.length == 0) return []
+  if (args.length == 1) {
+    var first = args[0]
+    if (!Object.isArray(first)) first = [first]
+    return first
+  }
+  return args
 }
+
