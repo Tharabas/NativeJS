@@ -249,7 +249,7 @@ Object.extend(Point.prototype, {
 			this.x = method(this.x);
 			this.y = method(this.y);
 		} else {
-			var pt = $(x, y);
+			var pt = $P(x, y);
 			this.x = method(this.x, pt.x);
 			this.y = method(this.y, pt.y);
 		}
@@ -490,6 +490,10 @@ var Rectangle = Class.create(Point, {
 
     if (Object.isUndefined(x)) {
       // nada
+    } else if (Object.isArray(x)) {
+      // rect from points ... damn sunshine code
+      this.moveTo(x.shift())
+      this.contain(x)
     } else if (x instanceof Rectangle) {
       this.moveTo(x.x, x.y);
       this.width = x.width;
@@ -523,11 +527,11 @@ var Rectangle = Class.create(Point, {
       this.height *= -1;
     }
   },
+  
   toString: function() {
     return 'Rectangle(' + [this.x, this.y, this.width, this.height] + ')';
-  }
-});
-Object.extend(Rectangle.prototype, {
+  },
+  
   clone: function() {
     return new Rectangle(this.x, this.y, this.width, this.height);
   },
@@ -587,6 +591,88 @@ Object.extend(Rectangle.prototype, {
     }
     
     return this.swap(destructive).swapSize(true);
+  },
+  
+  //
+  // jQuery style edges, with integrated setter
+  //
+  
+  // changing one value of these will preserve the other edged!
+  
+  left: function(value) {
+    if (Object.isUndefined(value)) return this.x
+    var delta   = value - this.x
+    this.x      = value
+    this.width -= delta
+    return this
+  },
+  
+  right: function(value) {
+    if (Object.isUndefined(value)) return this.x + this.width
+    this.width = value - this.x
+    return this
+  },
+  
+  top: function(value) {
+    if (Object.isUndefined(value)) return this.y
+    var delta    = value - this.y
+    this.y       = value
+    this.height -= delta
+    return this
+  },
+  
+  bottom: function(value) {
+    if (Object.isUndefined(value)) return this.y + this.height
+    this.height = value - this.y
+    return this
+  },
+  
+  // combined setter
+    
+  contain: function(points) {
+    if (!Object.isArray(points)) {
+      points = [points]
+    }
+    
+    var left   = this.left(),
+        right  = this.right(),
+        top    = this.top(),
+        bottom = this.bottom()
+        
+    points.each(function(pt) {
+      left   = left.min(pt.x)
+      right  = right.max(pt.x)
+      top    = top.min(pt.y)
+      bottom = bottom.max(pt.y)
+    })
+    
+    this.x = left
+    this.y = top
+
+    this.width  = right - left
+    this.height = bottom - top
+    
+    return this
+  },
+  
+  containing: function(points) {
+    return this.clone().contain(points)
+  },
+  
+  contains: function() {
+    var args = $A(arguments)
+    if (args.length == 1) {
+      if (args[1] instanceof Point) {
+        var pt = args[1]
+        
+        return pt.x.isWithin(this.x, this.getRight())
+      } else if (args[1] instanceof Rectangle) {
+        var rect = args[1]
+        
+      }
+    }
+    
+    return false
   }
 });
 
