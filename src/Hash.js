@@ -18,5 +18,15 @@ Object.extend(Hash.prototype, {
   put: function(key, value) {
     this.set(key, value);
     return this;
+  },
+  /**
+   * enhanced the get method to return a defaultValue
+   * in case the real value does not exist
+   */
+  get: function(key, defaultValue) {
+    if (this._object[key] !== Object.prototype[key]) {
+      var re = this._object[key] 
+      return Object.isUndefined(re) ? defaultValue : re
+    }
   }
 });
