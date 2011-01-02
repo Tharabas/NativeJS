@@ -338,13 +338,18 @@
      * Returns the integer-value this String contains
      * @return int
      */
-    intval: function() {
+    intval: function(base) {
       var s = 0; 
       while (this.charAt(s) == '0') {
         s++;
       };
-      return parseInt(this.substring(s));
+      return parseInt(this.substring(s), base);
     },
+    
+    floatval: function(base) {
+      return parseFloat(this, base)
+    },
+    
     TIME_SPLIT: /(\d{2})(?:\:(\d{2})(?:\:(\d{2}))?)?/,
     /**
      * Returns the Number value for a time-string this String contains
