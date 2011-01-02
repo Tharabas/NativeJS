@@ -89,10 +89,10 @@ Native = {
 })();
 
 Object.extend(Object, {
-  getLegacy: function(o) { 
+  getLegacy: function(o, namesOnly) { 
     var re = [], 
         c = o
-    while ((c = c.prototype || c.__proto__)) re.push(c.constructor.name)
+    while ((c = c.prototype || c.__proto__)) re.push(namesOnly ? c.constructor.name : c)
     return re.reverse() 
   }
 })

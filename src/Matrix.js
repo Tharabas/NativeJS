@@ -11,7 +11,7 @@ var Matrix = Class.create({
 	//
 	// init
 	//
-	initialize: function(width, height, value, options) {
+	initialize: function Matrix(width, height, value, options) {
 		if (width instanceof Matrix) {
 			this.width = width.width;
 			this.height = width.height;

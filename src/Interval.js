@@ -1,10 +1,9 @@
 /**
  * Numeric Interval
  */
-Interval = Class.create();
-Object.extend(Interval.prototype, {
+Interval = Class.create({
 	pattern: /(\[|\])?(\d+(?:\.\d+)?)(?:,|;|-)(\d+(?:\.\d+)?)(\[|\])?/,
-	initialize: function(start, end) {
+	initialize: function Interval(start, end) {
 		if (Object.isArray(start) && start.length == 2) {
 			end = start[1];
 			start = start[0];

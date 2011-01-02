@@ -10,7 +10,7 @@
       'long':     750,
       'longer':  1250
     },
-    initialize: function(callback, delay, context) {
+    initialize: function TimerContainer(callback, delay, context) {
       this.callback = callback || Prototype.emptyFunction
       this.setDelay(delay)
       this.context = context || window
@@ -96,7 +96,7 @@
    * This is mainly for input fields that should call a function after a few seconds of inactivity
    */
   DelayObserver = Class.create({
-  	initialize: function(elements, callback, delay, type, breakType) {
+  	initialize: function DelayObserver(elements, callback, delay, type, breakType) {
   		/**
   		 * initialize the environment
   		 */
@@ -179,7 +179,7 @@
   
   var _$ = function(n) { return Object.isString(n) ? $(n) : n }
 
-  Object.extend(Array.prototype, {
+  Object.overwrite(Array, {
     observe: function(eventName, callback, context) {
       return this.map(_$).compact().invoke('observe', eventName, callback, context)
     },

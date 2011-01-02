@@ -200,9 +200,8 @@ Object.extend(Element.Methods, {
   }
 });
 
-var Point = Class.create();
-Object.extend(Point.prototype, {
-	initialize: function(x,y) {
+var Point = Class.create({
+	initialize: function Point(x,y) {
 		if (Object.isUndefined(x)) {
 			this.x = 0;
 			this.y = 0;
@@ -410,7 +409,7 @@ function $P(x, y) {
 }
 
 var Dimensions = Class.create(Point, {
-	initialize: function($super, width, height) {
+	initialize: function Dimensions($super, width, height) {
 		if (typeof(width) == 'object') {
 			try {
 				this.moveTo(width.width, width.height);
@@ -420,9 +419,7 @@ var Dimensions = Class.create(Point, {
 		} else {
 			this.moveTo(width, height);
 		}
-	}
-});
-Object.extend(Dimensions.prototype, {
+	},
 	clone: function() {
 		return new Dimensions(this.getWidth(), this.getHeight());
 	},
@@ -483,7 +480,7 @@ function $D(w, h) {
 }
 
 var Rectangle = Class.create(Point, {
-  initialize: function($super, x, y, width, height) {
+  initialize: function Rectangle($super, x, y, width, height) {
     $super();
     this.width = 0;
     this.height = 0;

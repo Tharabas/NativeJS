@@ -60,10 +60,7 @@ var Prototype = {
 if (Prototype.Browser.MobileSafari)
   Prototype.BrowserFeatures.SpecificElementExtensions = false;
 
-
 var Abstract = { };
-
-
 var Try = {
   these: function() {
     var returnValue;
@@ -83,7 +80,6 @@ var Try = {
 /* Based on Alex Arnell's inheritance implementation. */
 
 var Class = (function() {
-
   var IS_DONTENUM_BUGGY = (function(){
     for (var p in { toString: 1 }) {
       if (p === 'toString') return false;
@@ -93,12 +89,19 @@ var Class = (function() {
 
   function subclass() {};
   function create() {
-    var parent = null, properties = $A(arguments);
+    var parent = null, 
+        properties = $A(arguments);
     if (Object.isFunction(properties[0]))
       parent = properties.shift();
-
-    function klass() {
-      this.initialize.apply(this, arguments);
+    
+    var className = properties.map(function(o) { return (o.initialize || {}).name })[0]
+    if (className) {
+      // nasty and evil, but returns the name correctly
+      eval('var klass = function ' + className + '() {\n  this.initialize.apply(this, arguments); \n}')
+    } else {
+      var klass = function UnnamedClass() {
+        this.initialize.apply(this, arguments);
+      }
     }
 
     Object.extend(klass, Class.Methods);
@@ -111,11 +114,19 @@ var Class = (function() {
       parent.subclasses.push(klass);
     }
 
-    for (var i = 0, length = properties.length; i < length; i++)
+    for (var i = 0, length = properties.length; i < length; i++) {
       klass.addMethods(properties[i]);
+    }
 
-    if (!klass.prototype.initialize)
+    if (!klass.prototype.initialize) {
       klass.prototype.initialize = Prototype.emptyFunction;
+    } 
+    
+    if (properties.initialize) {
+      //try { 
+        klass.name = properties.initialize.name 
+      //} catch (ex) { /* ignore */ }
+    }
 
     klass.prototype.constructor = klass;
     return klass;
@@ -141,7 +152,7 @@ var Class = (function() {
           return function() { return ancestor[m].apply(this, arguments); };
         })(property).wrap(method);
 
-        value.valueOf = method.valueOf.bind(method);
+        value.valueOf  = method.valueOf.bind(method);
         value.toString = method.toString.bind(method);
       }
       this.prototype[property] = value;
@@ -490,7 +501,7 @@ RegExp.escape = function(str) {
   return String(str).replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
 };
 var PeriodicalExecuter = Class.create({
-  initialize: function(callback, frequency) {
+  initialize: function PeriodicalExecuter(callback, frequency) {
     this.callback = callback;
     this.frequency = frequency;
     this.currentlyExecuting = false;
@@ -788,7 +799,7 @@ Object.extend(String.prototype, (function() {
 })());
 
 var Template = Class.create({
-  initialize: function(template, pattern) {
+  initialize: function Template(template, pattern) {
     this.template = template.toString();
     this.pattern = pattern || Template.Pattern;
   },
@@ -1029,14 +1040,6 @@ var Enumerable = (function() {
     return '#<Enumerable:' + this.toArray().inspect() + '>';
   }
 
-
-
-
-
-
-
-
-
   return {
     each:       each,
     eachSlice:  eachSlice,
@@ -1154,7 +1157,6 @@ Array.from = $A;
     });
   }
 
-
   function clone() {
     return slice.call(this, 0);
   }
@@ -1232,10 +1234,9 @@ function $H(object) {
 };
 
 var Hash = Class.create(Enumerable, (function() {
-  function initialize(object) {
+  var initialize = function Hash(object) {
     this._object = Object.isHash(object) ? object.toObject() : Object.clone(object);
   }
-
 
   function _each(iterator) {
     for (var key in this._object) {
@@ -1264,8 +1265,6 @@ var Hash = Class.create(Enumerable, (function() {
   function toObject() {
     return Object.clone(this._object);
   }
-
-
 
   function keys() {
     return this.pluck('key');
@@ -1399,7 +1398,7 @@ function $R(start, end, exclusive) {
 }
 
 var ObjectRange = Class.create(Enumerable, (function() {
-  function initialize(start, end, exclusive) {
+  var initialize = function ObjectRange(start, end, exclusive) {
     this.start = start;
     this.end = end;
     this.exclusive = exclusive;
@@ -1427,8 +1426,6 @@ var ObjectRange = Class.create(Enumerable, (function() {
     include:    include
   };
 })());
-
-
 
 var Ajax = {
   getTransport: function() {
@@ -1476,7 +1473,7 @@ Ajax.Responders.register({
   onComplete: function() { Ajax.activeRequestCount-- }
 });
 Ajax.Base = Class.create({
-  initialize: function(options) {
+  initialize: function AjaxBase(options) {
     this.options = {
       method:       'post',
       asynchronous: true,
@@ -1497,7 +1494,7 @@ Ajax.Base = Class.create({
 Ajax.Request = Class.create(Ajax.Base, {
   _complete: false,
 
-  initialize: function($super, url, options) {
+  initialize: function AjaxRequest($super, url, options) {
     $super(options);
     this.transport = Ajax.getTransport();
     this.request(url);
@@ -1663,15 +1660,8 @@ Ajax.Request = Class.create(Ajax.Base, {
 Ajax.Request.Events =
   ['Uninitialized', 'Loading', 'Loaded', 'Interactive', 'Complete'];
 
-
-
-
-
-
-
-
 Ajax.Response = Class.create({
-  initialize: function(request){
+  initialize: function AjaxResponse(request){
     this.request = request;
     var transport  = this.transport  = request.transport,
         readyState = this.readyState = transport.readyState;
@@ -1746,7 +1736,7 @@ Ajax.Response = Class.create({
 });
 
 Ajax.Updater = Class.create(Ajax.Request, {
-  initialize: function($super, container, url, options) {
+  initialize: function AjaxUpdater($super, container, url, options) {
     this.container = {
       success: (container.success || container),
       failure: (container.failure || (container.success ? null : container))
@@ -1782,7 +1772,7 @@ Ajax.Updater = Class.create(Ajax.Request, {
 });
 
 Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
-  initialize: function($super, container, url, options) {
+  initialize: function AjaxPeriodicalUpdater($super, container, url, options) {
     $super(options);
     this.onComplete = this.options.onComplete;
 
@@ -3286,7 +3276,7 @@ Element.addMethods({
   }
 
   Element.Layout = Class.create(Hash, {
-    initialize: function($super, element, preCompute) {
+    initialize: function ElementLayout($super, element, preCompute) {
       $super();
       this.element = $(element);
 
@@ -3628,7 +3618,7 @@ Element.addMethods({
   }
 
   Element.Offset = Class.create({
-    initialize: function(left, top) {
+    initialize: function ElementOffset(left, top) {
       this.left = left.round();
       this.top  = top.round();
 
@@ -5256,7 +5246,7 @@ Form.Element.Serializers = (function() {
 
 
 Abstract.TimedObserver = Class.create(PeriodicalExecuter, {
-  initialize: function($super, element, frequency, callback) {
+  initialize: function TimedObserver($super, element, frequency, callback) {
     $super(callback, frequency);
     this.element   = $(element);
     this.lastValue = this.getValue();
@@ -5287,7 +5277,7 @@ Form.Observer = Class.create(Abstract.TimedObserver, {
 /*--------------------------------------------------------------------------*/
 
 Abstract.EventObserver = Class.create({
-  initialize: function(element, callback) {
+  initialize: function EventObserver(element, callback) {
     this.element  = $(element);
     this.callback = callback;
 
@@ -5747,7 +5737,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
   }
 
   Event.Handler = Class.create({
-    initialize: function(element, eventName, selector, callback) {
+    initialize: function EventHandler(element, eventName, selector, callback) {
       this.element   = $(element);
       this.eventName = eventName;
       this.selector  = selector;
@@ -5999,9 +5989,10 @@ if (!document.getElementsByClassName) document.getElementsByClassName = function
 
 /*--------------------------------------------------------------------------*/
 
-Element.ClassNames = Class.create();
-Element.ClassNames.prototype = {
-  initialize: function(element) {
+//Element.ClassNames = Class.create();
+//Element.ClassNames.prototype = {
+Element.ClassNames = Class.create({
+  initialize: function ElementClassNames(element) {
     this.element = $(element);
   },
 
@@ -6028,7 +6019,7 @@ Element.ClassNames.prototype = {
   toString: function() {
     return $A(this).join(' ');
   }
-};
+});
 
 Object.extend(Element.ClassNames.prototype, Enumerable);
 
@@ -6036,7 +6027,7 @@ Object.extend(Element.ClassNames.prototype, Enumerable);
 
 (function() {
   window.Selector = Class.create({
-    initialize: function(expression) {
+    initialize: function Selector(expression) {
       this.expression = expression.strip();
     },
 

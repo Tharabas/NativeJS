@@ -3,9 +3,8 @@
  * 
  * this.start and this.duration contain hour values
  */
-TimeInterval = Class.create();
-Object.extend(TimeInterval.prototype, {
-	initialize: function(start, duration) {
+TimeInterval = Class.create({
+	initialize: function TimeInterval(start, duration) {
 		if (Object.isString(start)) {
 			this.unserialize(start);
 		} else {
