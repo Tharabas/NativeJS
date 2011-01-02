@@ -88,6 +88,15 @@ Native = {
   })
 })();
 
+Object.extend(Object, {
+  getLegacy: function(o) { 
+    var re = [], 
+        c = o
+    while ((c = c.prototype || c.__proto__)) re.push(c.constructor.name)
+    return re.reverse() 
+  }
+})
+
 // undefined shortcut for cleaner (scala-ish code)
 try {
   if (Object.isUndefined(window._)) { 
