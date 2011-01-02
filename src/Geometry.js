@@ -627,6 +627,14 @@ var Rectangle = Class.create(Point, {
     return this
   },
   
+  // css order
+  borders: function(top, right, bottom, left) {
+    if (Object.isUndefined(top)) {
+      return [this.top(), this.right(), this.bottom(), this.left()]
+    }
+    return this.top(top).left(left).right(right).bottom(bottom)
+  },
+  
   // combined setter
     
   contain: function(points) {
