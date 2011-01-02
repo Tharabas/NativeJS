@@ -59,6 +59,8 @@ Object.extend(Array.prototype, {
   
   /**
    * Simple shortcut for slice(0) on this array
+   *
+   * ... called clone in prototype ... good to know now ;)
    */
   copy: function() {
     return this.slice(0);
@@ -487,7 +489,7 @@ Object.extend(Array.prototype, {
    * Each element of the array will look like (prefix + value + suffix).
    * 
    * Example:
-   * $A($R(1,4)).prefix("id_") will result in ["id_1", "id_2", "id_3", "id_4"]
+   * (1).to(4).prefix("id_") will result in ["id_1", "id_2", "id_3", "id_4"]
    * 
    * @param string prefix the string to be put in front of the value
    * @param string suffix the string to be put behind the value
@@ -498,12 +500,6 @@ Object.extend(Array.prototype, {
     var s = suffix || '';
     
     return this.map(function(v) { return p + v + s })
-    
-    // for (var i = 0; i < this.length; i++) {
-    //   this[i] = p + this[i] + s;
-    // }
-    // 
-    // return this;
   },
   
   /**
@@ -580,105 +576,6 @@ Object.extend(Array.prototype, {
   	return re;
   },
   
-  /**
-   * @return Number the smallest value in this Array
-   */
-  getMinimum: function() {
-  	if (this.length == 0) {
-  		return null;
-  	}
-  	
-  	var re = this[0]; 
-  	for (var i = 1; i < this.length; i++) {
-  	  re = re.min(this[i]);
-  	}
-  	
-  	return re;
-  },
-  
-  /**
-   * @return the largest number in this Array
-   */
-  getMaximum: function() {
-  	if (this.length == 0) {
-  		return null;
-  	}
-  	
-  	var re = this[0]; 
-  	
-  	for (var i = 1; i < this.length; i++) {
-  	  re = re.max(this[i]);
-  	}
-  	
-  	return re;
-  },
-  
-  /**
-   * @return Number the average of all numbers in this Array
-   */
-  getAverage: function() {
-  	return this.sum() / this.length;
-  },
-  
-  /**
-   * @return Number the Median of all numbers in this Array
-   */
-  getMedian: function(sortFunction) {
-  	if (this.length == 0) {
-  		return null;
-  	}
-  	if (this.length == 1) {
-  		return this[0];
-  	}
-  	
-  	var sl;
-  	if (!Object.isUndefined(sortFunction)) {
-	  	sl = this.sort(sortFunction);
-  	} else {
-  		sl = this.sort();
-  	}
-  	
-  	return sl[(sl.length / 2).floor()];
-  },
-  
-  /**
-   * @return Number the count of all values in this Array that are unique within this Array
-   */
-  getDifferentValues: function() {
-  	var re = 0;
-  	var last = null;
-  	var sorted = this.sort();
-  	
-  	for (var i = 0; i < this.length; ++i) {
-  		if (this[i] != last) {
-  			last = this[i];
-  			++re;
-  		}
-  	}
-  	
-  	return re;
-  },
-  
-  /**
-   * A convenience Function to return the 
-   * minimum, maximum, average, median and number of different values in this array
-   *
-   * @return Object
-   */
-  getStatistics: function() {
-  	if (this.length == 0) {
-  		return null;
-  	}
-  	
-  	return {
-  		minimum: this.getMinimum(),
-  		maximum: this.getMaximum(),
-  		average: this.getAverage(),
-  		median:  this.getMedian(),
-  		values:  this.getDifferentValues()
-  	}
-  },
-
   /**
    * Checks whether all elements of this array are the same as a compare value.
    * If the compare value is a function the values of the array
