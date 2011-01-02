@@ -174,6 +174,13 @@
     substrings: function(ranges) {
       return ranges.map(this.substring.bind(this))
     },
+    
+    /**
+     * Splits a string in three parts with a given range
+     */
+    trisect: function(range) {
+      return [this.substring(0, range.start - 1), this.substring(range), this.substring(range.end + 1)]
+    },
 
     /**
      * Cuts off n characters from the end of the String
