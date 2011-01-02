@@ -77,7 +77,8 @@ files.each { |filename|
    */
   FILEHEAD
   
-  file.each_line { |line| out.puts(line) }
+  file.each_line { |line| out.puts("  " + line) }
+  out.puts(";")
 }
 
 out.close
