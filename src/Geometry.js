@@ -686,15 +686,15 @@ var Rectangle = Class.create(Point, {
     
     return false
   },
-  
-  Object.extend(Rectangle, {
-    Methods: {
-      contains: function(r, x, y) {
-        return x.isWithin(r.x, r.x + r.width )
-            && y.isWithin(r.y, r.y + r.height)
-      }
+});
+
+Object.extend(Rectangle, {
+  Methods: {
+    contains: function(r, x, y) {
+      return x.isWithin(r.x, r.x + r.width )
+          && y.isWithin(r.y, r.y + r.height)
     }
-  })
+  }
 });
 
 /**
