@@ -670,18 +670,31 @@ var Rectangle = Class.create(Point, {
   contains: function() {
     var args = $A(arguments)
     if (args.length == 1) {
-      if (args[1] instanceof Point) {
-        var pt = args[1]
-        
-        return pt.x.isWithin(this.x, this.getRight())
-      } else if (args[1] instanceof Rectangle) {
-        var rect = args[1]
-        
+      if (args[0] instanceof Point) {
+        var pt = args[0]
+        return Rectangle.Methods.contains(this, pt.x, pt.y)
+      } else if (args[0] instanceof Rectangle) {
+        var r = args[0]
+        return Rectangle.Methods.contains(this, r.x, r.y)
+            && Rectangle.Methods.contains(this, r.x + r.width, r.y + r.height)
       }
-    }
+    } else if (args.length == 2) {
+      if (args.all(Object.isNumber)) {
+        return Rectangle.Methods.apply(null, [this].concat(args))
+      }
+    } else if (args.all(Object.isPoint))
     
     return false
-  }
+  },
+  
+  Object.extend(Rectangle, {
+    Methods: {
+      contains: function(r, x, y) {
+        return x.isWithin(r.x, r.x + r.width )
+            && y.isWithin(r.y, r.y + r.height)
+      }
+    }
+  })
 });
 
 /**
@@ -698,3 +711,8 @@ $RECT = function(x,y,w,h) {
   
   return new Rectangle(x, y, w, h);
 };
+
+Object.extend(Object, {
+  isPoint: function(o) { return o instanceof Point },
+  isRectangle: function(o) { return o instanceof Rectangle }
+})
