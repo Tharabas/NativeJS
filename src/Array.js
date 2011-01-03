@@ -318,17 +318,58 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Rotates the array (destructive)
+   * (cuts of n elements from the head and appends them at the end, keeping the order)
+   *
+   * Example:
+   *   var a = [1,2,3,4,5]
+   *   a.rotate() 
+   *   => [2,3,4,5,1]
+   *   
+   *   var b = 'all your base are belong to us'.split(' ')
+   *   b.rotate(-3).join(' ')
+   *   => 'belong to us all your base are' // yoda style it is!
+   *
+   * @param  int   the number of indices to rotate, defaults to 1
+   * @return Array the rotated array
+   */
+  rotate: function(n) {
+    if (this.length == 0) {
+      return this
+    }
+    n = (n || 1).amod(this.length)
+    if (n > 0) {
+      var head = this.splice(0, n)
+      this.push.apply(this, head)
+    }
+    return this
+  },
+  
+  /**
+   * A non destructive rotate
+   */
+  rotated: function(n) {
+    return this.copy().rotate(n)
+  },
+  
+  /**
    * returns the n-th element of this array
    * allows a default value to be returned in case the item does not exist
    * also allows negative values, that will be used fron the end of the array
    * -1 specifies the last element
    */
   item: function(n, defaultValue) {
+    if (this.length == 0) {
+      if (!Object.isUndefined(defaultValue)) {
+        return defaultValue;
+      }
+      throw "This array is empty, can not return any item";
+    }
     if (n < 0) {
       n = this.length + n;
     }
     if (n < 0 || n >= this.length) {
-      if (Object.isDefined(defaultValue)) {
+      if (!Object.isUndefined(defaultValue)) {
         return defaultValue;
       }
       throw "Index out of Bounds: " + n + " is not within [0;" + (this.length - 1) + "]";
@@ -398,6 +439,13 @@ Object.extend(Array.prototype, {
    */
   last: function(defaultValue) {
     return this.get(this.length - 1, defaultValue);
+  },
+  
+  /**
+   * Inspired by the MooTools pick method
+   */
+  pick: function(defaultValue) {
+    return this.compact().first(defaultValue)
   },
   
   /**
