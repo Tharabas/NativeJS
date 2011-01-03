@@ -49,12 +49,34 @@ Object.extend(Math, {
     return one - two;
   },
 
+  /**
+   * simple multiply
+   */
   mul: function(one, two) {
     return one * two;
   },
 
+  /**
+   * simple division
+   */
   div: function(one, two) {
     return one / two;
+  },
+  
+  /**
+   * simple modulo
+   */
+  mod: function(number, modus) {
+    return number % modus
+  },
+  
+  /**
+   * Absolute (nagative save) modulo
+   */
+  amod: function(number, modus) {
+    return number < 0 
+      ? number - Math.floor(number / modus) * modus
+      : number % modus
   },
   
   increase: function(number) {
