@@ -70,11 +70,11 @@ files.each { |filename|
   filelog = `git log -n1 #{fullPath}`.split("\n")
   puts "+ #{filename.reverse[3,50].reverse} (#{File.size(file)} bytes)"
   out.puts <<-FILEHEAD
-  /**
-   * Name:    #{filename}
-   * Version: #{filelog[2][8,24]}
-   * Comment: #{filelog[4].strip}
-   */
+/**
+ * Name:    #{filename}
+ * Version: #{filelog[2][8,24]}
+ * Comment: #{filelog[4].strip}
+ */
   FILEHEAD
   
   file.each_line { |line| out.puts(line) }
