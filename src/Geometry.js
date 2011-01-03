@@ -683,6 +683,18 @@ var Rectangle = Class.create(Point, {
     
     return false
   },
+  
+  growBy: function(x, y) {
+    if (Object.isUndefined(x)) x = 1;
+    if (Object.isUndefined(y)) y = x;
+    
+    this.x -= x
+    this.y -= y
+    this.width  += x + x
+    this.height += y + y
+    
+    return this
+  }
 });
 
 Object.extend(Rectangle, {
