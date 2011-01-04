@@ -278,7 +278,7 @@ var Matrix = Class.create({
       } else {
         x++
       }
-      fn.bind(ctx||window,this.data[i],x,y).delay(0.001)
+      fn.apply(ctx||window,[this.data[i],x,y])
     }
     return this
   },
