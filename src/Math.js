@@ -320,6 +320,22 @@ Object.extend(Math, {
   split: function(number) {
     var floored = Math.floor(number);
     return [floored, number - floored];
+  },
+  
+  absmax: function(a, b) {
+    return a.abs() >= b.abs() ? a : b
+  },
+  
+  absmin: function(a, b) {
+    return a.abs() <= b.abs() ? a : b
+  },
+  
+  deg: function(number) {
+    return number * (Math.PI / 180)
+  },
+  
+  rad: function(number) {
+    return number / (Math.PI / 180)
   }
 });
 
