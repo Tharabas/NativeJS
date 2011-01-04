@@ -1,205 +1,6 @@
 /**
- * Extension to the Element.Methods
+ * A generic Point class (simple x,y) with some utility methods
  */
-Object.extend(Element.Methods, {
-	/**
-	 * Moves an Element to a specified (x,y) coordinate
-	 * 
-	 * @return Element the Element itself
-	 */
-  moveTo: function(element, x, y) {
-    var s = {};
-    if (Object.isElement(x)) {
-      var pos = x.positionedOffset();
-      var s = {
-        'top':  pos[1],
-        'left': pos[0]
-      };
-    } else {
-    	var pt = $P(x, y);
-      s = {
-        'top':  pt.y,
-        'left': pt.x
-      };
-    }
-  	
-  	if (s.left !== undefined)
-  	  element.style.left = s.left + 'px';
-  	if (s.top  !== undefined)
-      element.style.top  = s.top  + 'px';
-    
-    return element;
-  },
-  moveBy: function(element, x, y) {
-    var pt = $P(x, y);
-    var origin = $P(element);
-    
-    element.style.left = (origin.x + pt.x) + 'px';
-    element.style.top  = (origin.y + pt.y) + 'px';
-    
-    return element;
-  },
-  /**
-   * Moves an element right below the lower edge of another Element
-   * 
-   * @return Element the Element itself
-   */
-  moveBelow: function(element, target) {
-  	var ptTarget = $P(target);
-  	var dTarget = $D(target); 
-  	element.style.top = (ptTarget.x + dTarget.height) + 'px';
-  	
-  	return element;
-  },
-  /**
-   * Returns the CenterPoint of an Element
-   * 
-   * @return Point
-   */
-  getCenter: function(element) {
-    return $P(element).moveBy($D(element).getCenter());
-  },
-  /**
-   * Moves an Element so that it will be right above the center of its Parental Layout Element
-   */
-  centerOnParent: function(element) {
-    var parent = element.getOffsetParent()
-    var pd = $D(parent)
-    var ed = $D(element)
-    var nc = pd.subtract(ed).divide(2)
-    
-    return element.moveTo(nc)
-  },
-  centerHorizontallyOnParent: function(element) {
-    var parent = element.getOffsetParent()
-    var pd = $D(parent)
-    var ed = $D(element)
-    var nc = { x: (pd.x - ed.x) / 2 }
-    
-    return element.moveTo(nc);
-  },
-  /**
-   * Returns true when a Point is within the absolute range of this Element
-   * 
-   * @return boolean
-   */
-  containsPoint: function(element, x, y) {
-  	var pt = element.getRelativePosition(x, y);
-    var dim = $D(element);
-
-    return pt.x >= 0 && pt.x <= dim.getWidth()
-        && pt.y >= 0 && pt.y <= dim.getHeight();
-  },
-  /**
-   * 
-   */
-  getRelativePosition: function(element, x, y) {
-    return $P(x, y).subtract(element); 
-  },
-  
-  /**
-   * lets the first element mimic the style of the second
-   * 
-   * @return Element the Element itself
-   */
-  fit: function(element, target, styles) {
-    var stylesToSet = $(target).getStyles();
-    if (!Object.isUndefined(styles)) {
-      if (Object.isString(styles)) {
-        styles = $w(styles);
-      }
-      if (Object.isArray(styles)) {
-        var sts = {};
-        for (var e in stylesToSet) {
-          if (styles.contains(e)) {
-            sts[e] = stylesToSet[e];
-          }
-        }
-        stylesToSet = sts;
-      }
-    }
-    
-    // IE FIX
-    if (navigator.userAgent.indexOf('MSIE') > 0) {
-      if (stylesToSet['width'] == 'auto') {
-        stylesToSet['width'] = $(target).getDimensions().width + 'px';
-      }
-      if (stylesToSet['height'] == 'auto') {
-        stylesToSet['height'] = $(target).getDimensions().height + 'px';
-      }
-    }
-    
-  	element.setStyle(stylesToSet);
-  	
-  	return element;
-  },
-  
-  fitParent: function(element, styles) {
-    Element.Methods.fit(element, element.getOffsetParent() || window, styles)
-  },
-  
-  fitParentSize: function(element) {
-    Element.Methods.fitParent(element, 'width height')
-  },
-  
-  /**
-   * enables/disables an element
-   * 
-   * @return Element the Element itself
-   */
-  setEnabled: function(element, enabled) {
-    if (enabled !== false) {
-      element.removeAttribute("disabled");
-    } else {
-      element.setAttribute("disabled", "disabled");
-    }
-    
-    return element;
-  },
-  
-  /**
-   * property returning the enabled status of an Element
-   * @return boolean
-   */
-  isEnabled: function(element) {
-    return element.hasAttribute("disabled") == false;
-  },
-  
-  /**
-   * just the same as isEnabled
-   * @return boolean
-   */
-  enabled: function(element) {
-    return element.isEnabled();
-  },
-  
-  addClassNames: function(element, names) {
-    names.each(Element.Method.addClassName.curry(element))
-  },
-  
-  removeClassNames: function(element, names) {
-    names.each(Element.Method.removeClassName.curry(element))
-  },
-  
-  toggleClassNames: function(element, names) {
-    names.each(Element.Method.toggleClassName.curry(element))
-  },
-  
-  updateClassNames: function(element, names) {
-    names.foreach(function(n) {
-      if (n.startsWith('+')) {
-        element.addClassName(n.substring(1))
-      } else if (n.startsWith('-')) {
-        element.removeClassName(n.substring(1))
-      } else if (n.startsWith('~')) {
-        element.toggleClassName(n.substring(1))
-      } else {
-        element.toggleClassName(n)
-      }
-    })
-  }
-});
-
 var Point = Class.create({
 	initialize: function Point(x,y) {
 		if (Object.isUndefined(x)) {
@@ -240,7 +41,7 @@ var Point = Class.create({
 	},
 	
 	clone: function() {
-		return new Point(this.getX(), this.getY());
+		return new Point(this.x, this.y);
 	},
 	
 	map: function(method, x, y) {
@@ -263,10 +64,65 @@ var Point = Class.create({
 	 * @param y Number or Omitted
 	 */
 	moveTo: function(x, y) {
-		var pt = $P(x, y);
-		this.x = pt.x;
-		this.y = pt.y;
-		return this;
+		var pt = $P(x, y)
+		this.x = pt.x
+		this.y = pt.y
+		return this
+	},
+	
+	/**
+	 * Moves this point towards another point with a given part
+	 * percentage of 0% will be the original point, 100% will be the other point
+	 * 
+	 * Example: 
+	 *   $P(1, 1).moveTowards($P(3, 3), 0.5) => Point(2, 2)
+	 *   $P(1, 1).moveTowards($P())
+	 *
+	 * @param Point pt       the destination point
+	 * @param float distance the distance, defaults to 0.5
+	 * @param bool  absolute whether the movement is absolute, deafults to false
+	 * @see Point.merge
+	 */
+	moveTowards: function(pt, distance, absolute) {
+	  if (distance instanceof Point) {
+	    distance = distance.radius()
+	  }
+	  var delta = pt.subtract(this)
+	  if (absolute) {
+	    // absolute movement is is pixels
+	    if (Object.isUndefined(distance)) distance = 1
+	    if (delta.x == 0) {
+	      if (delta.y != 0) {
+  	      // y movement only
+  	      this.y += distance * delta.y.sign()
+	      }
+	      // else would be no movement at all ... so nada
+	    } else if (delta.y == 0) {
+	      // x movement only
+	      this.x += distance * delta.x.sign()
+	    } else {
+  	    // x and y movement
+  	    var ratio = delta.y / delta.x
+  	    // division term is always positive due to the (_+1) within the sqrt
+  	    var x = distance / (ratio.square() + 1).sqrt()
+  	    this.x += x
+  	    this.y += x * ratio
+	    }
+	  } else {
+	    if (Object.isUndefined(distance)) distance = .5
+
+  	  this.x += (pt.x - this.x) * distance
+  	  this.y += (pt.y - this.y) * distance
+	  }
+	  
+	  return this
+	},
+	
+	/**
+	 * A non-destructive move towards
+	 */
+	movedTowards: function(pt, distance, absolute) {
+	  return this.clone().moveTowards(pt, distance, absolute)
 	},
 	
 	/**
@@ -279,6 +135,40 @@ var Point = Class.create({
 		this.x += pt.x;
 		this.y += pt.y;
 		return this;
+	},
+	
+	/**
+	 * Moves in a polar fashion (by angle and radius)
+	 */
+	moveByPolar: function(radius, angle) {
+	  return this.moveBy(Point.polar(angle, radius))
+	},
+	
+	// another new type function
+	angle: function(value) {
+	  if (Object.isUndefined(value)) {
+	    return Math.atan2(this.x, this.y)
+	  }
+	  
+	  var pt = Point.polar(value, this.radius())
+	  this.x = pt.x
+	  this.y = pt.y
+	  return this;
+	},
+	
+	rotateBy: function(value) {
+	  return this.angle(this.angle() + value)
+	},
+	
+	radius: function(value) {
+	  if (Object.isUndefined(value)) {
+	    return (this.x.square() + this.y.square()).sqrt()
+	  }
+	  
+	  var pt = Point.polar(this.angle(), value)
+	  this.x = pt.x
+	  this.y = pt.y
+	  return this
 	},
 	
 	/**
@@ -343,6 +233,10 @@ var Point = Class.create({
 	ceil: function() {
 		return this.clone().map(Math.ceil);
 	},
+	
+	snap: function(v, f) {
+	  return this.clone().map(Math.snap._(_, v, f));
+	},
 
 	add: function(x, y) {
 		var pt = $P(x, y);
@@ -361,6 +255,16 @@ var Point = Class.create({
 	divide: function(x, y) {
 		var pt = $P(x, y);
 		return this.clone().moveTo(this.getX() / pt.getX(), this.getY() / pt.getY());
+	},
+	
+	absoluteIn: function(w, h) {
+	  var d = $D(w, h)
+	  return this.multiply(d.width, d.height)
+	},
+	
+	relativeIn: function(w, h) {
+	  var d = $D(w, h)
+	  return this.divide(d.width, d.height)
 	},
 	
 	normalize: function(width, height) {
@@ -390,10 +294,37 @@ var Point = Class.create({
 		return Math.sqrt(this.x.pow(2) + this.y.pow(2));
 	},
 	
+	half: function() {
+	  return this.multiply(.5)
+	},
+	
+	doubled: function() {
+	  return this.multiply(2)
+	},
+	
+	toDimensions: function() {
+	  return Dimensions(this.x, this.y)
+	},
+	
 	toString: function() {
 		return 'Point(' + this.x + ', ' + this.y + ')';
 	}
 });
+
+Object.extend(Point, {
+  merge: function(pt1, pt2, p) {
+    return new Point(
+      pt1.x + (pt2.x - pt1.x) * p,
+      pt1.y + (pt2.x - pt1.y) * p
+    )
+  },
+  polar: function(angle, radius) {
+    return new Point(
+      angle.sin() * (radius || 1),
+      angle.cos() * (radius || 1)
+    )
+  }
+})
 
 function $P(x, y) {
 	if (Object.isElement(x) || (Object.isString(x) && !Object.isUndefined($(x)))) {
@@ -449,6 +380,10 @@ var Dimensions = Class.create(Point, {
 		return this.divide(2);
 	},
 	
+	toPoint: function() {
+	  return new Point(this.width, this.height)
+	},
+	
 	toString: function() {
 		return 'Dimensions(' + this.getWidth() + ', ' + this.getHeight() + ')';
 	}
@@ -466,6 +401,9 @@ function $D(w, h) {
 	}
 	if (w instanceof Rectangle) {
 	  return w.getSize();
+	}
+	if (w instanceof Point) {
+	  return new Dimensions(w.x, w.y)
 	}
 	if (w instanceof HTMLCanvasElement) {
 	  return new Dimensions(w.width, w.height)
@@ -565,8 +503,25 @@ var Rectangle = Class.create(Point, {
 		return this.getWidth() * this.getHeight();
 	},
 	
+	// old style
 	getCenter: function() {
-		return this.divide(2);
+		return new Point(this.x + this.width * .5, this.y + this.height * .5)
+	},
+	
+	setCenter: function(x, y) {
+	  var c = $P(x, y)
+	  this.moveTo(c.subtract(this.width * .5, this.height * .5))
+	},
+	
+	// new style center
+	center: function(x, y) {
+	  if (Object.isUndefined(x)) return this.getCenter()
+	  this.setCenter(x, y)
+	  return this
+	},
+	
+	radius: function() {
+	  return new Point(this.width * .5, this.height * .5)
 	},
   
   swapSize: function(destructive) {
