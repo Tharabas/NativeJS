@@ -9,12 +9,12 @@
  * I'm currently working on a replacement or permission from the PrototypeJS Folks
  * to takeover only a part of their framework
  *
- * @version 1.4.4
+ * @version 1.5
  * @requires Basic
  */
  
 Native = {
-  Version: '1.4.4',
+  Version: '1.5',
   // the REQUIRED_PROTOTYPE is subjected to be removed
   REQUIRED_PROTOTYPE: '1.7.0',
   
@@ -89,11 +89,44 @@ Native = {
 })();
 
 Object.extend(Object, {
+  cast: function(o, clazz) {
+    return Object.extend(new clazz, o)
+  },
   getLegacy: function(o, namesOnly) { 
-    var re = [], 
-        c = o
+    var re = [], c = o;
     while ((c = c.prototype || c.__proto__)) re.push(namesOnly ? c.constructor.name : c)
     return re.reverse() 
+  },
+  map: function(object, fn, ctx) {
+    fn = fn || Prototype.K
+    var ks = Object.keys(object)
+    var re = {}
+    for (var i = 0; i < ks.length; i++) {
+      var k = ks[i]
+      var v = object[k]
+      re[k] = fn.apply(ctx, [v, i])
+    }
+    return re
+  },
+  $a: function(o) {
+    return Object.map(o, function(_) { return $a(_) })
+  },
+  /**
+   * This helper creates several objects by mod picking values of an object
+   */
+  expand: function(object, count) {
+    // ensure a working object with only array values
+    var o = Object.$a(object)
+    var re = []
+    count = count || 1
+    if (Object.isString(count)) {
+      // use a property of the object, create an object for each of those elements
+      count = object[count].length.max(1)
+    }
+    for (var i = 0; i < count; i++) {
+      re.push(Object.map(o, function(v) { return v.modget(i) }))
+    }
+    return re
   }
 })
 
@@ -140,5 +173,13 @@ function $a() {
     return first
   }
   return args
+}
+
+function $map(o, fn, ctx) {
+  return Object.map(o, fn, ctx)
+}
+
+function $expand(o,c) { 
+  return Object.expand(o, c) 
 }
 
