@@ -57,6 +57,14 @@ Object.extend(Array.prototype, {
     return fn.apply(ctx, this);
   },
   
+  eachOn: function(fn, ctx) {
+    return this.each(function(v) { return v.on(fn, ctx) })
+  },
+  
+  mapOn: function(fn, ctx) {
+    return this.map(function(v) { return v.on(fn, ctx) })
+  },
+  
   /**
    * Simple shortcut for slice(0) on this array
    *
@@ -449,6 +457,16 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Will return an array containing the value at a given index (0 by default) 
+   * or no value at all (empty array)
+   *
+   * For use as a maybe Monad
+   */
+  maybe: function(index) {
+    return this.length > (index || 0) ? [this[index || 0]] : []
+  },
+  
+  /**
    * contains test whether a specified needle element is part of this array
    * 
    * @param needle any object that is suspected to be within the array
@@ -672,5 +690,78 @@ Object.extend(Array.prototype, {
   		}
   		return false;
   	}
+  },
+  
+  /**
+   *
+   */
+  toObject: function(names, naming) {
+    names  = (names || []).map()
+    naming = naming || function(i) { return 'item_' + i }
+    return this.alternate(names.map().concat($R(names.length, this.length - 1).map(naming)))
+      .inGroupsOf(2)
+      .map(function(v) { return v[1].asKey(v[0]) })
+      .foldLeft({}, Object.extend)
+  },
+  
+  /**
+   *
+   */
+  alternate: function() {
+    return Array.alternate.apply(null, [this].concat($A(arguments)))
+  },
+  
+  /**
+   * This is similar to 'inGroupsOf' but separates the array somehow
+   *
+   * Example:
+   *    [1,2,3,4,5,6,7,8,9].inColumns(3)
+   * => [ [1,4,7], [2,5,8], [3,6,9] ]
+   *
+   * All columns will have equal length, empty fields will be filled
+   *    [1,2,3,4,5,6,7,8,9].inColumns(4, 'X')
+   * => [ [1,5,9], [2,6,'X'], [3,7,'X'], [4,8,'X'] ]
+   */
+  inColumns: function(cols, fillWith) {
+    // ensure to grab at least 1 column
+    cols = parseInt(cols || 1).max(1)
+    if (cols == 1) return [this];
+    
+    // max is usually greater than the length
+    var max = this.length.snap(cols, Math.ceil)
+    // create 'cols' return arrays
+    var re = $R(1, cols).map(Array.create)
+    
+    for (var i = 0; i < max ;) {
+      for (var col = 0; col < cols; col++, i++) {
+        // second for is faster than i % cols every time
+        re[col].push(this[i] || fillWith)
+      }
+    }
+    
+    return re
   }
 });
+
+Object.extend(Array, {
+  /**
+   * @return Array a new Array
+   */ 
+  create: function() {
+    return new Array()
+  },
+  /**
+   * Like shuffling cards this will pick
+   */
+  alternate: function() {
+    var arrs = $A(arguments).map(function(_) { return $a(_) })
+    var len = arrs.pluck('length').reduce(Math.max)
+    var re = []
+    for (var i = 0; i < len; i++) {
+      for (var j = 0; j < arrs.length; j++) {
+        if (arrs[j].length > i) re.push(arrs[j][i])
+      }
+    }
+    return re
+  }
+})
