@@ -1,10 +1,10 @@
-      //||      //\\                                             ||   //-\\
-     // ||     //  \\       ||   ||                              ||  ||   ||
-    //  ||    //    \\     \||\                    //--\\        ||  ||
-   //   ||   //      \\     ||   ||  \\      //   //    \\       ||   \\-\\
-  //    ||  //--------\\    ||   ||   \\    //   ||-----||       ||       ||  
- //     || //          \\   ||   ||    \\  //     \\       ||    ||  ||   ||
-//      ||//            \\   \\  ||     \\//       \\--//   \\--//    \\-//
+      ****      ****                                             ||   //-\\
+     ** **     **  **       ||   ||                              ||  ||   ||
+    **  **    **    **     \||\                    //--\\        ||  ||
+   **   **   **      **     ||   ||  \\      //   //    \\       ||   \\-\\
+  **    **  ************    ||   ||   \\    //   ||-----||       ||       ||  
+ **     ** **          **   ||   ||    \\  //     \\       ||    ||  ||   ||
+**      ****            **   \\  ||     \\//       \\--//   \\--//    \\-//
 
 ----------------
 --- NativeJS ---
@@ -20,14 +20,13 @@ Currently you will need at least a ruby installation to build the native.js.
 Just use './build.rb' or 'ruby build.rb' from the root folder and the file will be build.
 
 I'm using the YUI-Compressor (http://developer.yahoo.com/yui/compressor/) as well afterwards,
-to create a native-min.js, but that is not necessary to use the features.
+to create a native.min.js, but that is not necessary to use the features.
 
 Just include it at the head of your HTML file, like this:
 
 <script type="text/javascript" src="native.js"></script>
 
-There is a test.html, that already does this kind of stuff,
-but is then used for 
+There is a template.html, that demonstrates this.
 
 -------------------------
 --- What is it about? ---
@@ -36,9 +35,6 @@ but is then used for
 This Library started as an extension to the Prototype-Framework (www.prototypejs.org)
 I took some of my prototype-independent functions being added to String and Number,
 and combined them with the functional beauty of List (aka Array) Programming.
-
-Initially it contained a lot of DOM-Element Manipulation as well, but that got chopped off for now.
-Maybe I'll add it later as an extension.
 
 The Library want's to focus on working with the code in an elegant fashion.
 
@@ -65,7 +61,7 @@ var sum = [1, 2, 3, 4, 5].reduce(function(a, b) { return a + b }) => 15 // a fun
 
 This allows some Scala-like processing:
 
-var sum = (1).to(100).reduce(Math.sum) => 5050
+var sum = (1).to(100).reduce(Math.sum) => 5050 // Gauss knew!
 
 var fac = function(n) { return (1).to(n).reduce(Math.mul) } // functional faculty definition
 
@@ -75,7 +71,8 @@ NOTE: As JavaScript does no recursion optimization (that I'd be aware of) reduce
 --- Compatibility ---
 ---------------------
 
-Currently I'm testing with Google Chrome 5.0, Safari 5.0 and Firefox 3.6, no Problems so far.
-Internet Explorer should and may work, but I can not recommend it as it's JavaScript Engine
+Currently I'm testing with Google Chrome 8.0, Safari 5.0 and Firefox 3.6, no Problems so far.
+Internet Explorer 7-8 should and may work, but I can not recommend it as it's JavaScript Engine
 is simply and impartial slow.
+Did not test on IE 9, yet
 
