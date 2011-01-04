@@ -33,47 +33,110 @@
 
   Object.overwrite(String, {
     fn: String.fn.methodize(),
+    
     apply: function(context, args) { 
       var fn = context[this + ''] || this.fn();
       return fn.apply(context, args);
     },
+    
+    /**
+     * Used for callbacks (each, map)
+     *
+     * Passing a string to map will pluck it
+     * I'm aware that there is Enumerable.pluck, 
+     * but I kinda like this one :D
+     */
     call: function(context, value, index) {
       try { return value[this + '']; } catch (ex) { }
     },
+    
+    /**
+     * 
+     */
     each: function(f, context) {
       f = f || Math.ident;
       this.split(this.contains(',') ? /\s*,\s*/ : /\s+/).each(f, context);
     },
+    
+    /**
+     * Splits this array by , trimming all sub elements
+     * if there is not , within the string, splits by whitespace
+     * Uses the given method on each string (Identity by default)
+     * 
+     * Example:
+     *   'Hewy, Dewy, Lewy'.map() => ['Hewy', 'Dewy', 'Lewy']
+     *   'Peter Paul, Mary'.map() => ['Peter Paul', 'Mary']
+     *
+     * @param Function f the method that will be used on each entry
+     * @param any context
+     * @return Array the mapped Strings
+     */
     map: function(f, context) {
       f = f || Math.ident;
       return this.split(this.contains(',') ? /\s*,\s*/ : /\s+/).map(f, context);
     },
+    
+    /**
+     * @return Array an array containing each char in this string
+     */
     toArray: function() {
       var a = [];
       for (var i = 0;  i < this.length; i++) a.push(this[i]);
       return a;
     },
+    
+    /**
+     * @return String this string backwards
+     */
     reverse: function() {
       return this.toArray().reverse().glue();
     },
+    
+    /**
+     * @return String the rot13 version of this string
+     */
     rot13: function() {
       return this.toArray().map(String.rot13c).glue();
     },
+    
+    /**
+     * Returns a new Object containing one element
+     * this string is the key and the argument is the value
+     *
+     * @param any v the value
+     * @return Object a new Object
+     */
     asKey: function(v) {
       var re = {}
       re[this] = v
       return re
     },
+    
+    /**
+     * grabs the n-th match
+     */
+    fetch: function(r, n) {
+      return $a(this.match(r)).maybe(n || 0)[0] || ''
+    },
+    
+    /**
+     * 
+     */
     contains: function(needle) {
       // ... the eternal void is part of everything ...
       if (!needle) { return true }
       return this.indexOf(needle) != -1;
     },
+    
+    /**
+     *
+     */
     containsIgnoringCase: function(needle) {
       // ... the eternal void is part of everything ...
       if (!needle) { return true }
       return this.toLowerCase().indexOf(needle.toLowerCase()) != -1;
     },
+    
     /**
      * @return int occurrences of needle within this String
      */
@@ -82,6 +145,7 @@
       while ((pos = this.indexOf(needle, pos + 1)) != -1) { n++ } 
       return n;
     },
+    
     /**
      * Enhanced the indexOf function to understand RegExp for matching
      *
