@@ -336,6 +336,10 @@ Object.extend(Math, {
   
   rad: function(number) {
     return number / (Math.PI / 180)
+  },
+  
+  sign: function(n) {
+    return n < 0 ? -1 : n > 0 ? 1 : 0
   }
 });
 
