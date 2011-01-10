@@ -175,6 +175,20 @@ function $return(value) {
   return function() { return value }
 };
 
+/**
+ * Will return the argument at a given index
+ */
+function $arg() {
+  var takes = $A(arguments)
+  if (takes.length <= 1) {
+    // slightly faster than calling get on each call
+    return function() { return $A(arguments)[takes[0]] }
+  }
+  return function() {
+    return $A(arguments).get(takes)
+  }
+};
+
 // as i used it too often ...
 function $void(object) {
   return typeof object === "undefined"
