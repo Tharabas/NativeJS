@@ -740,6 +740,20 @@ Object.extend(Array.prototype, {
     }
     
     return re
+  },
+  
+  // logging ... maybe externalize this
+  log: function() {
+    console.log.apply(console, this)
+    return this
+  },
+  warn: function() {
+    console.warn.apply(console, this)
+    return this
+  },
+  error: function() {
+    console.error.apply(console, this)
+    return this
   }
 });
 
