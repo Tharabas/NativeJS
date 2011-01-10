@@ -154,3 +154,9 @@ Object.extend(Function.prototype, {
 	  };
 	}
 });
+
+Object.extend(Function, {
+  arg: function(n) {
+    return function() { return $A(arguments)[n] }
+  }
+})

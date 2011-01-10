@@ -16,7 +16,9 @@ files = Dir.new(src_dir).entries.select { |f| f =~ /.*\.js/ }
 basic_name = 'Basic.js'
 
 start_files = %w(
-  Basic 
+  Basic/Prototype
+  Basic/Ajax
+  Basic/Element 
   Framework 
   Function 
   Math 
@@ -34,7 +36,7 @@ start_files.map! { |n| n + '.js' }
 end_files.map!   { |n| n + '.js' }
 
 files.reject! { |name| 
-  start_files.any?  { |sf| sf == name } or end_files.any? { |ef| ef == name }
+  start_files.any? { |sf| sf == name } or end_files.any? { |ef| ef == name }
 }
 
 # add start_files at the front
@@ -55,7 +57,7 @@ puts "Building #{build_name}.js in #{build_dir}"
 
 # write header
 out.puts <<-HEADER
-/**
+/**!
  * NativeJS, JavaScript Extensions
  * Build: #{build}
  * Date:  #{date}
@@ -66,16 +68,27 @@ HEADER
 
 files.each { |filename|
   fullPath = src_dir + '/' + filename
-  file = File.open(fullPath, 'r') 
+  file = File.open(fullPath, 'r')
   filelog = `git log -n1 #{fullPath}`.split("\n")
-  puts "+ #{filename.reverse[3,50].reverse} (#{File.size(file)} bytes)"
+  puts "+ #{filename.reverse[3,filename.length].reverse} (#{File.size(file)} bytes)"
   out.puts <<-FILEHEAD
 /**
  * Name:    #{filename}
+ FILEHEAD
+ 
+  if filelog.length > 0 then
+    out.puts <<-FILECOMMENTS
  * Version: #{filelog[2][8,24]}
  * Comment: #{filelog[4].strip}
- */
-  FILEHEAD
+    FILECOMMENTS
+  else
+    out.puts <<-FILECOMMENTS
+ * Version: NEW
+ * Comment: Not comitted yet
+    FILECOMMENTS
+  end
+ 
+  out.puts " */"
   
   file.each_line { |line| out.puts(line) }
   out.puts(";")

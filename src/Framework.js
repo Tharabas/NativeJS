@@ -1,4 +1,4 @@
-/*!
+/**!
  * Rogue Coding's native.js
  *
  * Generic extensions to JavaScript Prototypes

@@ -444,16 +444,33 @@ Object.extend(Array.prototype, {
   },
   
   /**
-   *
+   * 
+   * @param index int the index to pull from this array
+   * @param defaultValue any
+   * @return any
    */
   modget: function(index, defaultValue) {
     if (this.length == 0) {
       return defaultValue;
     }
-    while (index < 0) { 
-      index += this.length 
-    }
-    return this[index % this.length];
+    return this[index.amod(this.length)];
+  },
+  
+  /**
+   * Returns a sliced version of this Array, 
+   * but flips over if any index from start to end is outside this array
+   *
+   * Example: 
+   *   // 26 letters, indices 0 - 25
+   *   var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.toArray()
+   *   letters.modslice(-3, 2) => ['X', 'Y', 'Z', 'A', 'B', 'C']
+   *   
+   *
+   * @param start int
+   * @param end   int
+   */
+  modslice: function(start, end) {
+    return start.to(end).map(Math.amod._(_,this.length)).map(function(n) { return this[n] }, this)
   },
   
   /**

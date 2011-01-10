@@ -4,9 +4,14 @@
     <title>NativeJS Test Page</title>
     <style type="text/css">
 body {
-  margin: 0px;
-  background-color: black;
+  margin: 4px;
+  background-color: #202020;
   color: white;
+}
+
+pre.logo {
+  color: gold;
+  font-size: 10px;
 }
 
 #repl_input, #repl_output {
@@ -17,13 +22,15 @@ body {
 }
 
 #repl {
-  border: 1px solid white;
+  border: 2px solid white;
+  background-color: black;
   margin: 8px;
   padding: 4px;
 }
 
 #repl_output {
   min-height: 250px;
+  border-bottom: 1px dashed white;
 }
 
 #repl_input {
@@ -54,17 +61,17 @@ document.onload = function() {
   </head>
   <body>
     <div align="center">
-      <canvas id="can" height="250" style="width: 100%;">
-        <pre>
-      //||      //\\                                             ||   //-\\ 
-     // ||     //  \\       ||   ||                              ||  ||   ||
-    //  ||    //    \\     \||\                    //--\\        ||  ||     
-   //   ||   //      \\     ||   ||  \\      //   //    \\       ||   \\-\\ 
-  //    ||  //--------\\    ||   ||   \\    //   ||-----||       ||       ||
- //     || //          \\   ||   ||    \\  //     \\       ||    ||  ||   ||
-//      ||//            \\   \\  ||     \\//       \\--//   \\--//    \\-// 
+      <!--canvas id="can" height="250" style="width: 100%;"-->
+        <pre class="logo">
+      ****      ****                                             ||   //-\\ 
+     ** **     **  **       ||   ||                              ||  ||   ||
+    **  **    **    **     \||\                    //--\\        ||  ||     
+   **   **   **      **     ||   ||  \\      //   //    \\       ||   \\-\\ 
+  **    **  ************    ||   ||   \\    //   ||-----||       ||       ||
+ **     ** **          **   ||   ||    \\  //     \\       ||    ||  ||   ||
+**      ****            **   \\  ||     \\//       \\--//   \\--//    \\-// 
         </pre>
-      </canvas>
+      <!--/canvas-->
     </div>
     <h1>NativeJS - JavaScript Library</h1>
     <div id="repl">
@@ -74,7 +81,7 @@ document.onload = function() {
       <div>
         <table width="100%">
           <tr>
-            <td id="repl_prefix"><!-- --></td>
+            <td id="repl_prefix">&gt;</td>
             <td width="100%"><input id="repl_input" /></td>
           </tr>
         </table>
