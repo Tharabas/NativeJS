@@ -26,6 +26,20 @@ Object.extend(Function.prototype, {
 	},
 	
 	/**
+	 * Returns a function that will call the source function with different parameters
+	 * (reordering parameters)
+	 *
+	 * @return Function
+	 */
+	using: function() {
+    var __method = this;
+    var take = $A(arguments);
+    return function() {
+      return $A(arguments).get(take).on(__method)
+    }
+  },
+	
+	/**
 	 * Marks the __on attribute of the function
 	 */
 	on: function(n) {
