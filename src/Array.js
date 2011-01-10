@@ -132,7 +132,7 @@ Object.extend(Array.prototype, {
    */
   eachOver: function(duration, iterator, context) {
     if (this.length == 0) return this;
-    if (duration < 25) duration *= 1000
+    if (duration < 5) duration *= 1000
     return this.eachAfter(duration / this.length / 1000, iterator, context)
   },
 
@@ -167,7 +167,7 @@ Object.extend(Array.prototype, {
     var args = $A(arguments)
     var duration = args.shift()
     if (this.length == 0) return this;
-    if (duration < 25) duration *= 1000
+    if (duration < 5) duration *= 1000
     var delay = duration / this.length / 1000
     return this.invokeAfter.apply(this, [delay].concat(args))
   },
