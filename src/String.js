@@ -404,7 +404,7 @@
      */
     intval: function(base) {
       var s = 0; 
-      while (this.charAt(s) == '0') {
+      while (this.charAt(s) == '0' && s < this.length - 1) {
         s++;
       };
       return parseInt(this.substring(s), base);
