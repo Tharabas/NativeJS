@@ -395,10 +395,38 @@ Object.extend(Array.prototype, {
    * @param any defaultValue (optional)
    */
   get: function(index, defaultValue) {
-    if (index < 0 || index >= this.length) {
-      return defaultValue;
+    if (Object.isNumber(index)) {
+      if (index < 0 || index >= this.length) {
+        return defaultValue;
+      }
+      return this[index];
     }
-    return this[index];
+    if (Object.isArray(index)) {
+      return index.map(function(n) { return this[n] }, this)
+    }
+    
+    if (Object.isString(index)) {
+      // split the string, first by comma (,) and then the results each by a hyphon (-)
+      // pull out numbers by invoking intval on them
+      var re = index.split(',').invoke('split', '-').invoke('invoke', 'intval').mapOn(function(from, to) {
+        if (Object.isUndefined(to)) {
+          // return as array, as we reduce afterwards
+          return [this.get(from)]
+        }
+        return from < to 
+          ? this.slice(from, to + 1) 
+          : this.slice(to, from + 1).reverse()
+      }, this).reduce(function(a,b) {
+        return a.concat(b)
+      })
+      return re.length > 1 ? re : re[0] || defaultValue
+    } else if (index instanceof ObjectRange) {
+      return index.start > index.end 
+        ? this.slice(index.start, index.end + 1)
+        : this.slice(index.end, index.start + 1).reverse()
+    }
+    
+    throw new Error('Unknown type ' + typeof(index) + ' index for Array.get')
   },
   
   /**
