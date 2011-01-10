@@ -16,7 +16,7 @@
 Native = {
   Version: '1.5',
   PATH_EXPRESSION: /(.*)(native(-\d\.\d+(?:\.\d+))?(\.min)?\.js)(\?.*)?$/,
-  LOAD_EXPRESSION: /\?.*load=([a-z\_\-\/,]*)/,
+  LOAD_EXPRESSION: /\?.*load=(([0-9A-Za-z\_\-\/]+)(?:,([0-9A-Za-z\_\-\/]+))*)/,
   
   //
   // require and load are both inspired by the famous script.aculo.us, thx @ Thomas Fuchs
@@ -64,10 +64,11 @@ Native = {
       .includedScriptNames()
       .cmap(Native.PATH_EXPRESSION)
       .maybe()
-      .eachOn(function(full, path, name, version, minified, load) {
-        load.fetch(Native.LOAD_EXPRESSION, 1).split(',').each(function(include) { 
-          Native.require(path + include + '.js') 
-        })
+      .eachOn(function(full, path, name, version, minified, includes) {
+        $a($if(includes, 'match', Native.LOAD_EXPRESSION))
+          .slice(2)
+          .wrap(path, '.js')
+          .each(Native.require)
       })
   }
 };
@@ -165,12 +166,16 @@ function $if() {
   if (condition) return fn.apply(condition, args) 
 };
 
-// will throw either the first argument or the context
+/**
+ * will throw either the first argument or the context
+ */
 function $throw(ex) {
   throw ex || this
 };
 
-// will return a function that always returns the given value
+/**
+ * will return a function that always returns the given value
+ */
 function $return(value) {
   return function() { return value }
 };
