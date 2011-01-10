@@ -5,9 +5,7 @@
  *
  * @requires 
  */
-var Matrix = Class.create({
-	OPTION_NO_FILL: 0x10,
-	
+var Matrix = Class.create({	
 	//
 	// init
 	//
@@ -32,7 +30,7 @@ var Matrix = Class.create({
 		if (Object.isUndefined(options)) {
 			options = 0;
 		}
-		if (!(options & this.OPTION_NO_FILL)) {
+		if (!(options & Matrix.OPTION_NO_FILL)) {
 			if (Object.isFunction(value)) {
 				this.fill(null);
 				this.map(value, true);
@@ -106,14 +104,35 @@ var Matrix = Class.create({
 	},
 	
 	fill: function(value) {
-    if (Object.isUndefined(value)) {
-      value = null;
-    }
+	  value = value || null // prevent undefined values
     var size = this.getSize();
     // initialize the maxrix
     for (var i = 0; i < size; i++) {
       this.data[i] = value;
     }
+  },
+  
+  column: function(col, value, ctx) {
+    if (Object.isUndefined(value)) {
+      // only return the row
+      var re = []
+      for (var i = col; i < this.data.length; i+= this.width) {
+        re.push(this.data[i])
+      }
+      return re
+    }
+
+    var f = $return(value)
+    if (Object.isFunction(value)) {
+      f = value.bind(ctx || null)
+    } else if (Object.isArray(value)) {
+      f = function(v, x, y) { return value[y] }
+    }
+    for (var i = col, row = 0; i < this.data.length; i+= this.width, row++) {
+      this.data[i] = f(this.data[i], col, row)
+    }
+    
+    return this
   },
   
 	getColumn: function(column) {
@@ -123,6 +142,27 @@ var Matrix = Class.create({
 		}
 		
 		return re;
+	},
+	
+	row: function(row, value, ctx) {
+    var n = this.width * row,
+        m = n + thiw.width;
+    if (Object.isUndefined(value)) {
+      // only return the row
+      return this.data.slice(n, m)
+    }
+
+    var f = $return(value)
+    if (Object.isFunction(value)) {
+      f = value.bind(ctx)
+    } else if (Object.isArray(value)) {
+      f = function(v, x, y) { return value[x] }
+    }
+    for (var i = n; i < this.data.length; i++) {
+      this.data[i] = f(this.data[i], i - n, row)
+    }
+    
+    return this
 	},
 	
 	getRow: function(row) {
@@ -146,11 +186,28 @@ var Matrix = Class.create({
     var m = new Matrix(width, height);
     for (var i = 0; i < width; i++) {
       for (var j = 0; j < height; j++) {
-        m._set(i, j, this.get(i + x, j + y));
+        m._set(i, j, this._get(i + x, j + y));
       }
     }
     
     return m;
+  },
+  
+  /**
+   * Transposition of the Matrix, will flip it, non-destructive
+   * 
+   * Example: (excuse those crappy multiline brackets :)
+   *
+   * / 1, 2 \     / 1, 3, 5 \
+   * | 3, 4 |  => \ 2, 4, 6 /
+   * \ 5, 6 /
+   *
+   */
+  transpose: function() {
+    var me = this
+    return new Matrix(this.height, this.width, function(v, x, y) {
+      return me._get(y, x)
+    })
   },
   
   getAllObjects: function(type) {
@@ -163,15 +220,8 @@ var Matrix = Class.create({
   	} else {
   		typeFunction = function(o) { return o instanceof type; };
   	}
-
-  	var re = [];
-		for (var i = 0; i < this.data.length; i++) {
-			if (typeFunction(this.data[i])) {
-				re.push(this.data[i]);
-			}
-		}
-		
-		return re;
+  	
+  	return this.data.filter(typeFunction)
   },
   
   indexOf: function(value, x, y) {
@@ -237,7 +287,7 @@ var Matrix = Class.create({
   	if (destructive) {
   		m = this;
   	} else {
-	  	m = new Matrix(this.width, this.height, null, this.OPTIONS_NO_FILL);
+	  	m = new Matrix(this.width, this.height, null, Matrix.OPTIONS_NO_FILL);
   	}
   	
   	// do the dimensions match?
@@ -296,7 +346,7 @@ var Matrix = Class.create({
   	if (destructive) {
   		m = this;
   	} else {
-	  	m = new Matrix(this.width, this.height, null, this.OPTIONS_NO_FILL);
+	  	m = new Matrix(this.width, this.height, null, Matrix.OPTIONS_NO_FILL);
   	}
   	
   	var size = this.getSize();
@@ -433,6 +483,12 @@ var Matrix = Class.create({
 		return maxVal;
 	},
 	
+	dump: function(fn) {
+	  fn = fn || console.log.bind(console)
+	  
+	  return this.data.inGroupsOf(this.width).each(function(v) { fn.apply(null,v)})
+	},
+	
 	toBinaryOut: function() {
 		return this.map(function(v) { return v ? '+' : '-' }).toArray().glue();
 	},
@@ -442,11 +498,66 @@ var Matrix = Class.create({
 	}
 });
 
+Object.extend(Matrix, {
+  // Options
+  OPTION_NO_FILL: 0x10,
+  
+  // creater
+  create: function(width, height, value, options) {
+    return new Matrix(width, height, value, options)
+  },
+  
+  // column creater
+  Column: function(height, value, options) {
+    return new Matrix(1, height, value, options)
+  },
+  
+  // row creater
+  Row: function(width, value, options) {
+    return new Matrix(width, 1, value, options)
+  },
+  
+  // qubic matrix creater
+  Qubic: function(dimension, value, options) {
+    return new Matrix(dimension, dimension, value, options)
+  },
+  
+  // Identity matrix of a given size
+  Identity: function(dimension) {
+    return Matrix.Qubic(dimension, function(v,x,y) { return x == y ? 1 : 0 })
+  }
+})
+
 $M = function() {
 	var args = $(arguments);
   if (args[0] instanceof Matrix) {
   	return args[0];
   } else {
-  	return new Matrix.apply(this, args);
+    var M = new Matrix;
+    M.initialize.apply(M, args)
+  	return M;
   }
 }
+
+Object.extend($M, {
+  Column:function(height, value, options) {
+    if (Object.isArray(height)) {
+      return Matrix.Column(height.length, function(v,x,y) { return height[y] })
+    } else {
+      return Matrix.Column(height, value, options)
+    }
+  },
+  Row: function(width, value, options) {
+    if (Object.isArray(width)) {
+      return Matrix.Row(width.length, function(v,x,y) { return width[x] })
+    } else {
+      return Matrix.Row(width, value, options)
+    }
+  },
+  Q: function(dim, value, options) {
+    return Matrix.Qubic(dim, value, options)
+  },
+  Ident: function(dim) {
+    return Matrix.Identity(dim)
+  }
+})
