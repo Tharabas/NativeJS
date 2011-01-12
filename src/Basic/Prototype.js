@@ -80,6 +80,7 @@ var Try = {
 /* Based on Alex Arnell's inheritance implementation. */
 
 var Class = (function() {
+  var anonClassCount = 0;
   var IS_DONTENUM_BUGGY = (function(){
     for (var p in { toString: 1 }) {
       if (p === 'toString') return false;
@@ -95,14 +96,11 @@ var Class = (function() {
       parent = properties.shift();
     
     var className = properties.map(function(o) { return (o.initialize || {}).name })[0]
-    if (className) {
-      // nasty and evil, but returns the name correctly
-      eval('var klass = function ' + className + '() {\n  this.initialize.apply(this, arguments); \n}')
-    } else {
-      var klass = function UnnamedClass() {
-        this.initialize.apply(this, arguments);
-      }
+    if (!className) {
+      className = 'UnnamedClass' + (++anonClassCount)
     }
+    // nasty and evil, but returns the name correctly
+    eval('var klass = function ' + className + '() {\n  this.initialize.apply(this, arguments); \n}')
 
     Object.extend(klass, Class.Methods);
     klass.superclass = parent;
@@ -125,12 +123,6 @@ var Class = (function() {
       klass.prototype.initialize = Prototype.emptyFunction;
     } 
     
-    if (properties.initialize) {
-      //try { 
-        klass.name = properties.initialize.name 
-      //} catch (ex) { /* ignore */ }
-    }
-
     klass.prototype.constructor = klass;
     return klass;
   }

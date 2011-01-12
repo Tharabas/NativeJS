@@ -3,7 +3,11 @@
  */
 Object.extend(Array.prototype, {
   /**
+   * Calls apply on each element in this array,
+   * with a given context as the first argument
    * 
+   * @param Any context the context
+   * @return Array the mapped values that result of the applying
    */
   apply: function() {
     var args = $A(arguments);
@@ -27,6 +31,23 @@ Object.extend(Array.prototype, {
     return f.call(context, value, index);
   },
   
+  /**
+   * Returnes a filled version of this Array,
+   * any undefined value in this array will be replaced
+   * consecutively by the next value in the arguments.
+   *
+   * Mainly used for a partial application of Functions
+   *
+   * Example:
+   *   // assume _ to be undefined
+   *   var _ = undefined,
+   *       a = [_, 2, _ 4],
+   *       b = [1, 3, 5]
+   *   a.fill(b) = [1, 2, 3, 4, 5]
+   *
+   * @param Array... args
+   * @return Array the filled version of this Array
+   */
   fill: function(args) {
     if (!Object.isArray(args)) {
       return this.fill($A(arguments))
@@ -52,15 +73,29 @@ Object.extend(Array.prototype, {
   /**
    * Applies this array on a given function,
    * a context may be passed
+   *
+   * @param Function fn a callback that shall be called with this array as arguments
+   * @param Any ctx optional, a context for the callback
+   * @return Any the result of the called array
    */
   on: function(fn, ctx) {
     return fn.apply(ctx, this);
   },
   
+  /**
+   * Calls 'on' on each element in this Array,
+   * assuming that this Array contains Arrays ...
+   * 
+   * @param Function fn a callback for each element
+   * @param 
+   */
   eachOn: function(fn, ctx) {
     return this.each(function(v) { return v.on(fn, ctx) })
   },
   
+  /**
+   *
+   */
   mapOn: function(fn, ctx) {
     return this.map(function(v) { return v.on(fn, ctx) })
   },
@@ -74,12 +109,26 @@ Object.extend(Array.prototype, {
     return this.slice(0);
   },
   
+  /**
+   * Returns a shifted version of this array (non-destructive)
+   * 
+   * @param int n optional, a number of how many elements shall be 
+   *              removed from the beginning of this array, defaults to 1
+   * @return Array the shortened version of this array 
+   */
   shifted: function(n) {
     var a = this.copy(); 
     for (var i = (n || 1).max(1); i > 0; i--) a.shift(); 
     return a;
   },
   
+  /**
+   * Returns a popped version of this array (non-destructive)
+   * 
+   * @param int n optional, a number of how many elements shall be 
+   *              removed from the end of this array, defaults to 1
+   * @return Array the shortened version of this array 
+   */
   popped: function(n) {
     var a = this.copy();
     for (var i = (n || 1).max(1); i > 0; i--) a.pop();
@@ -173,12 +222,24 @@ Object.extend(Array.prototype, {
   },
   
   /**
-   * simple reduce left method
-   * calls the passed function on the first two elements of this array
+   * Simple reduce left method.
+   * Calls the passed function on the first two elements of this array
    * the result temporarily replaces those two
    * in case there is only one value left it will be returned
-   *
-   * empty arrays will return undefined, be aware of that
+   * 
+   * Empty arrays will return undefined, be aware of that
+   * 
+   * Example:
+   *   [1,2,3,4,5].reduceLeft(Math.mul)
+   *   => ((((1 * 2) * 3) * 4) * 5) = 120
+   * 
+   * Note:
+   *   The Math examples might not display the full
+   *   power of these methods
+   * 
+   * @param Function fn
+   * @param Any context
+   * @param Any the reduced result
    */
   reduceLeft: function(fn, context) {
     // non recursive implementation
@@ -203,13 +264,20 @@ Object.extend(Array.prototype, {
 
   /**
    * forwards to reduceLeft
+   * @see Array.prototype.reduceLeft
    */
   reduce: function(fn, context) {
     return this.reduceLeft(fn, context);
   },
   
   /**
-   * reduce right
+   * Just like reduceLeft, but on a reversed Array
+   *
+   * Example:
+   *   [1,2,3,4,5].reduceRight(Math.mul)
+   *   => (1 * (2 * (3 * (4 * 5)))) = 120
+   *
+   * @see Array.prototype.reduceLeft
    */
   reduceRight: function(fn, context) {
     return this.copy().reverse().reduce(fn, context);
@@ -232,6 +300,9 @@ Object.extend(Array.prototype, {
   /**
    * Shuffles this array and returns it afterwards
    * (destructive operation)
+   * linear complexity
+   * 
+   * @return Array the shuffeled version of this array
    */
   shuffle: function() {
     var i, v, n
@@ -247,6 +318,8 @@ Object.extend(Array.prototype, {
   
   /**
    * Returns a shuffeled copy of this array
+   *
+   * @return Array a shuffeled version of this Array
    */
   shuffled: function() {
     return this.copy().shuffle()
@@ -254,6 +327,8 @@ Object.extend(Array.prototype, {
   
   /**
    * Returns a random element from this array
+   *
+   * @return Any a random value from this array
    */
   random: function() {
     if (this.length == 0) {
@@ -272,7 +347,10 @@ Object.extend(Array.prototype, {
   },
   
   /**
-   * FoldLefts a list of objects into one object
+   * FoldLefts a list of objects into one object.
+   *
+   * @param Object into a base object, may be omitted
+   * @return Object a merged object
    */
   merge: function(into) {
     return this.foldLeft(into || {}, Object.extend)
@@ -280,6 +358,8 @@ Object.extend(Array.prototype, {
   
   /**
    * String Function shortcut for this.join("");
+   *
+   * @return String this array joined
    */
   glue: function() {
   	return this.join("");
@@ -316,7 +396,11 @@ Object.extend(Array.prototype, {
   },
   
   /**
-   * exchanges two elements of this array by their indices
+   * Exchanges two elements of this array by their indices.
+   *
+   * @param int one
+   * @param int another
+   * @return Array this array
    */
   swap: function(one, another) {
     var t = this[another];
@@ -430,24 +514,37 @@ Object.extend(Array.prototype, {
   },
   
   /**
-   * 
+   * Returns the first element after the index of a given matching element
+   *
+   * @param Any compare the to be matched element
+   * @param Any defaultValue 
+   * @return Any
    */
   after: function(compare, defaultValue) {
     return this.get(this.indexOf(compare) + 1, defaultValue);
   },
   
   /**
-   *
+  * Returns the first element before the index of a given matching element
+  *
+  * @param Any compare the to be matched element
+  * @param Any defaultValue 
+  * @return Any
    */
   before: function(compare, defaultValue) {
     return this.get(this.indexOf(compare) - 1, defaultValue);
   },
   
   /**
-   * 
-   * @param index int the index to pull from this array
-   * @param defaultValue any
-   * @return any
+   * Returns a value from this array
+   * In case the index does not match the range of the array
+   * it will be modulo-matched to the range.
+   * Only if this array does not contain any elements, 
+   * the defaultValue will be returned.
+   *
+   * @param int index the index to pull from this array
+   * @param Any defaultValue
+   * @return Any
    */
   modget: function(index, defaultValue) {
     if (this.length == 0) {
@@ -636,27 +733,15 @@ Object.extend(Array.prototype, {
   /**
    * @return Array new array with all elements of this Array parsed to integers
    */
-  intval: function() {
-  	var re = [];
-  	
-  	for (var i = 0; i < this.length; i++) {
-  		re.push(parseInt(Number(this[i])));
-  	}
-  	
-  	return re;
+  intval: function(base) {
+    return this.map(function(v) { return parseInt(n, base || 10) })
   },
   
   /**
    * @return Array new array with all elements of this Array parsed to floats
    */
   floatval: function() {
-  	var re = [];
-  	
-  	for (var i = 0; i < this.length; i++) {
-  		re.push(Number(this[i]));
-  	}
-  	
-  	return re;
+    return this.map(function(v) { return parseFloat(n) })
   },
   
   /**
@@ -750,14 +835,19 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Calls Array.alternate with this array as first argument
    *
+   * @param  Array... some other arrays
+   * @return Array
+   * @see    Array.alternate
    */
   alternate: function() {
     return Array.alternate.apply(null, [this].concat($A(arguments)))
   },
   
   /**
-   * This is similar to 'inGroupsOf' but separates the array somehow
+   * This is similar to 'inGroupsOf' but separates the array somehow.
+   * Reverses the Array.alternate method
    *
    * Example:
    *    [1,2,3,4,5,6,7,8,9].inColumns(3)
@@ -804,13 +894,35 @@ Object.extend(Array.prototype, {
 
 Object.extend(Array, {
   /**
+   * Creates a new Array, used for callbacks
+   *
    * @return Array a new Array
    */ 
   create: function() {
     return new Array()
   },
+  
   /**
-   * Like shuffling cards this will pick
+   * Alternate Join of multiple Arrays.
+   * Think of it as shuffling cards.
+   * It will pick a value from each given Array argument.
+   * The resulting Array will contain n * m elements,
+   * where n is the number of Arrays given 
+   *   and m is the maximum length of these
+   * 
+   * @param Array... the arrays that have to be joined
+   * 
+   * @return Array the alternated array, flattened by one level
+   * 
+   * Example:
+   *   var a = ['a', 'b', 'c', 'd']
+   *   var b = [1, 2, 3, 4]
+   *   Array.alternate(a, b)
+   *   => ['a', 1, 'b', 2, 'c', 3, 'd', 4]
+   *
+   *   var c = ['peter', 'paul', 'mary']
+   *   Array.alternate(a, b, c)
+   *   => ['a', 1, 'peter', 'b', 2, 'paul', 'c', 3, 'mary', 'd', 4, undefined]
    */
   alternate: function() {
     var arrs = $A(arguments).map(function(_) { return $a(_) })
