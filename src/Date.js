@@ -72,6 +72,14 @@ Object.extend(Date.prototype, {
 
     return this
   },
+  setTimeValue: function(hours, minutes, seconds, milliseconds) {
+    if (!$void(hours)) this.setHours(hours)
+    if (!$void(minutes)) this.setMinutes(minutes)
+    if (!$void(seconds)) this.setSeconds(seconds)
+    if (!$void(milliseconds)) this.setMilliseconds(milliseconds)
+    
+    return this
+  },
   /**
    * @deprecated use equalsDate instead
    */
