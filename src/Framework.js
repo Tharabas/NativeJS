@@ -99,6 +99,14 @@ Native = {
 })();
 
 Object.extend(Object, {
+  instanceOf: function(clazz) {
+    if (!Object.isFunction(clazz)) {
+      clazz = clazz.constructor
+    }
+    return function(o) {
+      return o instanceof clazz 
+    }
+  },
   cast: function(o, clazz) {
     return Object.extend(new clazz, o)
   },
@@ -198,6 +206,10 @@ function $arg() {
 // as i used it too often ...
 function $void(object) {
   return typeof object === "undefined"
+}
+
+function $instanceOf(clazz) { 
+  return Object.instanceOf(clazz)
 }
 
 // this tiny method will yield an array in any case
