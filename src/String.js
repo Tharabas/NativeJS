@@ -24,6 +24,14 @@
       // depending on the def ... create a function
 
       return args.length ? fn.apply(window, args) : fn; 
+    },
+    asKey: function(string, value) {
+      var re = {};
+      re[string + ''] = value;
+      return re;
+    },
+    asValue: function(string, key) {
+      return String.asKey(key, string);
     }
   });
   
