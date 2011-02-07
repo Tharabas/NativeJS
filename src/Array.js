@@ -514,6 +514,27 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Returns the index of a comparison in this array
+   * Even though there is a native Array.indexOf this will replace that
+   * as the native version does not support function comparison
+   * 
+   * @param Any compare
+   * @param Number afterIndex, optional
+   * @return Number integer number, -1 if no match was found, the first index otherwise
+   */
+  indexOf: function(compare, afterIndex) {
+    if (Object.isUndefined(afterIndex)) afterIndex = -1;
+    var fn = Object.isFunction(compare) 
+      ? compare
+      : function(v) { return v == compare }
+      ;
+    for (var i = afterIndex + 1; i < this.length; i++) {
+      if (fn.apply(null, [this[i], i])) return i;
+    }
+    return -1;
+  },
+  
+  /**
    * Returns the first element after the index of a given matching element
    *
    * @param Any compare the to be matched element
