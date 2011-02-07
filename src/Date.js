@@ -65,6 +65,13 @@ Object.extend(Date.prototype, {
   	
   	return re;
   },
+  setDateValue: function(year, month, date) {
+    if (!$void(year)) this.setYear(year)
+    if (!$void(month)) this.setMonth(month)
+    if (!$void(day)) this.setDate(day)
+
+    return this
+  },
   /**
    * @deprecated use equalsDate instead
    */
