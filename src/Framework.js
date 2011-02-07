@@ -67,6 +67,7 @@ Native = {
       .eachOn(function(full, path, name, version, minified, includes) {
         $a($if(includes, 'match', Native.LOAD_EXPRESSION))
           .slice(2)
+          .compact()
           .wrap(path, '.js')
           .each(Native.require)
       })
