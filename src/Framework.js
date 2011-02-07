@@ -99,6 +99,13 @@ Native = {
 })();
 
 Object.extend(Object, {
+  Undefined: function Undefined() { return undefined },
+  Null: function Null() { return null },
+  classOf: function(o) {
+    if (o === undefined) return Object.Undefined
+    if (o === null) return Object.Null
+    return o.constructor
+  },
   instanceOf: function(clazz) {
     if (!Object.isFunction(clazz)) {
       clazz = clazz.constructor
@@ -223,6 +230,10 @@ function $a() {
     return first
   }
   return args
+}
+
+function $class(o) {
+  return Object.classOf(o)
 }
 
 function $map(o, fn, ctx) {
