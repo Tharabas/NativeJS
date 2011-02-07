@@ -22,49 +22,61 @@
     //
     // simple math functions
     //
-
+    
+    /**
+     * Identity method, will return only the first argument passed
+     *
+     * @param Number number an input number
+     * @return Number the given number
+     */
     ident: function(number) {
-      return number;
+      return number
     },
-
+    
+    /**
+     * Will return the numeric negation of the first argument passed
+     *
+     * @param Number number an input number
+     * @return Number 
+     */
     negate: function(number) {
-      return -number;
+      return -number
     },
 
     /**
      * boolean not
      */
     not: function(number) {
-      return !number;
+      return !number
     },
 
     /**
      * Bitwise inversion
      */
     invert: function(number) {
-      return ~number;
+      return ~number
     },
 
     sum: function(one, two) {
-      return one + two;
+      return one + two
     },
 
     sub: function(one, two) {
-      return one - two;
+      return one - two
     },
 
     /**
      * simple multiply
      */
     mul: function(one, two) {
-      return one * two;
+      return one * two
     },
 
     /**
      * simple division
      */
     div: function(one, two) {
-      return one / two;
+      return one / two
     },
 
     /**
@@ -84,18 +96,18 @@
     },
 
     increase: function(number) {
-      return number + 1;
+      return number + 1
     },
 
     decrease: function(number) {
-      return number - 1;
+      return number - 1
     },
 
     //
     // reversed order pow
     //  
     rpow: function(exp, base) {
-      return Math.pow(base, exp);
+      return Math.pow(base, exp)
     },
 
     //
@@ -103,21 +115,21 @@
     //
 
     transpose: function(number) {
-      return 1 / number;
+      return 1 / number
     },
 
     twice: function(number) {
-      return number + number;
+      return number + number
     },
 
     half: function(number) {
-      return 0.5 * number;
+      return 0.5 * number
     },
 
     // = x ^ 2
     // = rpow(2, x)
     square: function(number) {
-      return number * number;
+      return number * number
     },
 
     //
@@ -125,50 +137,58 @@
     //
 
   	and: function(one, two) {
-  		return one & two;
+  		return one & two
+  	},
+  	
+  	and2: function(one, two) {
+  	  return one && two
   	},
 
   	or: function(one, two) {
-  		return one | two;
+  		return one | two
+  	},
+  	
+  	or2: function(one, two) {
+  	  return one || two
   	},
 
   	xor: function(one, two) {
-  		return one ^ two;
+  		return one ^ two
   	},
 
   	nor: function(one, two) {
-  		return !(one | two);
+  		return !(one | two)
   	},
 
   	nand: function(one, two) {
-  		return !(one & two);
+  		return !(one & two)
   	},
 
   	equal: function(one, two) {
-      return one == two;
+      return one == two
     },
 
     identical: function(one, two) {
-      return one === two;
+      return one === two
     },
 
   	empty: function(value) {
   		if (Object.isUndefined(value) || value == null) {
-  			return true;
+  			return true
   		}
   		if (Object.isString(value) && value.strip().length == 0) {
-  			return true;
+  			return true
   		}
   		if (Object.isNumber(value) && parseFloat(value) == 0) {
-  			return true;
+  			return true
   		}
   		if (Object.isArray(value) && value.length == 0) {
-  			return true;
+  			return true
   		}
-  		if (typeof(value) == 'object' && $H(value).toArray().length == 0) {
-  		  return true;
+  		if (Object.classOf(value) == Object && Object.keys(value).length == 0) {
+  		  return true
   		}
-  		return false;
+  		return false
   	},
 
     notEmpty: function(value) {
@@ -311,28 +331,28 @@
      * @return String the HEX Value of this Number
      */
     toHex: function(number, digits) {
-    	return number.toPaddedString(digits || 0, 16).toUpperCase();
+    	return number.toPaddedString(digits || 0, 16).toUpperCase()
     },
     /**
      * @return String the Binary value of this Number
      */
     toBinary: function(number) {
-    	return number.toString(2);
+    	return number.toString(2)
     },
 
     /**
      * Returns the "behind the comma" value of a number
      */
     tail: function(number) {
-      return number - Math.floor(number);
+      return number - Math.floor(number)
     },
 
     /**
      * Returns an array containing the floor and tail value of a number
      */
     split: function(number) {
-      var floored = Math.floor(number);
-      return [floored, number - floored];
+      var floored = Math.floor(number)
+      return [floored, number - floored]
     },
 
     /**
@@ -370,16 +390,19 @@
       return n < 0 ? -1 : n > 0 ? 1 : 0
     }
   });
+  
+  $H(Math).each(function(m) { 
+    Number.prototype[m.key] = m.value.methodize();
+  });
+  $w('abs acos asin atan ceil cos exp floor log max min pow round sin sqrt tan').each(function(n) {
+    Number.prototype[n] = Math[n].methodize();
+  });
+  $w('sum sub mul div pow rpow and and2 or or2 xor nor nand equal identical mod amod').each(function(n) {
+    Number.prototype['_' + n] = function() {
+      return Math[n]._(this);
+    }
+    Number.prototype[n + '_'] = function() {
+      return Math[n]._(_, this)
+    }
+  });
 })()
-
-$H(Math).each(function(m) { 
-  Number.prototype[m.key] = m.value.methodize();
-});
-$w('abs acos asin atan ceil cos exp floor log max min pow round sin sqrt tan').each(function(n) {
-  Number.prototype[n] = Math[n].methodize();
-});
-$w('sum sub mul div pow rpow and or xor nor nand equal identical').each(function(n) {
-  Number.prototype['_' + n] = function() {
-    return Math[n].curry(this);
-  }
-});
