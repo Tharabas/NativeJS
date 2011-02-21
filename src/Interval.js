@@ -1,5 +1,8 @@
 /**
  * Numeric Interval
+ *
+ * relic, subjected to be removed in an upcomping version,
+ * as ObjectRange should do about the same
  */
 Interval = Class.create({
 	pattern: /(\[|\])?(\d+(?:\.\d+)?)(?:,|;|-)(\d+(?:\.\d+)?)(\[|\])?/,
