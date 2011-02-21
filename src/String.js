@@ -518,6 +518,24 @@
     hr: function() {
     	return this + '<hr />';
     },
+    
+    /**
+     * Creates a DOM Node (Element or TextNode) of this string
+     *
+     * @param Object attributes, optional, a set of key+value pairs
+     *               if omitted a TextNode will be created
+     * @return HTMLElement
+     */
+    node: function(attributes) {
+      if ($void(attributes)) {
+        return document.createTextNode(this + '')
+      }
+      var re = document.createElement(this + '')
+      Object.keys(attributes || {}).each(function(key) {
+        re.setAttribute(key, attributes[key])
+      })
+      return re
+    },
 
     /**
      * Returns a getter Name for this string.
