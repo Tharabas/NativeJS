@@ -165,7 +165,7 @@ Object.extend(Array.prototype, {
    * @return Array array of grouped Arrays
    */
   by: function(iterator, context) { 
-    return $H(this.groupBy(iterator, context)).values() 
+    return Object.values(this.groupBy(iterator, context))
   },
   
   /**
