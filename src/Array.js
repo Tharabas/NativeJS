@@ -183,7 +183,7 @@ Object.extend(Array.prototype, {
    * @return Array filtered list unique by the iterator
    */
   uniqBy: function(iterator, context) {
-    return this.by(iterator, context).invoke('pluck', 0)
+    return this.by(iterator, context).invoke('first')
   },
   
   /**
