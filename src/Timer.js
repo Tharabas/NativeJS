@@ -15,6 +15,7 @@
       this.setDelay(delay)
       this.context = context || window
       this._handle = null
+      this._repeat = false
       this.futures = []
       var me = this;
       this.prototype = function() {
@@ -47,12 +48,24 @@
       var args = $A(arguments)
       var re = this.callback.apply(this.context, args)
       this.feedFutures(re)
+      if (this._repeat) {
+        var doRepeat = Object.isFunction(this._repeat) ? this._repeat(this) : true
+        if (Object.isNumber(this._repeat)) {
+          this._repeat--
+        }
+        if (doRepeat) this.apply(this, args)
+      }
       return re
     },
     clear: function() {
       if (!this._handle) return;
       window.clearTimeout(this._handle)
       this._handle = null
+      return this
+    },
+    repeat: function(times) {
+      if ($void(times)) return this._repeat
+      this._repeat = times
       return this
     },
     registerFuture: function(fn, count) {
