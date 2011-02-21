@@ -157,9 +157,34 @@ Object.extend(Array.prototype, {
   /**
    * Will return only an array (instead of an object) grouped by the result of the iterator
    * 
-   * ['Peter', 'Paul', 'Mary'].by('length') => [['Peter'], ['Paul', 'Mary']]
+   * Example: 
+   *   ['Peter', 'Paul', 'Mary'].by('length') => [['Peter'], ['Paul', 'Mary']]
+   *
+   * @param any iterator
+   * @param any context
+   * @return Array array of grouped Arrays
    */
-  by: function(iterator, context) { return $H(this.groupBy(iterator, context)).values() },
+  by: function(iterator, context) { 
+    return $H(this.groupBy(iterator, context)).values() 
+  },
+  
+  /**
+   * Combines uniq with by and yields the first matching elements
+   *
+   * Example: 
+   *   ['Peter', 'Paul', 'Mary'].uniqBy('length') => ['Peter', 'Paul']
+   *
+   * Compare to by: 'Paul' and 'Mary' are both length 4, 
+   *                but Paul is first in the source list,
+   *                so mary will be rejected
+   *
+   * @param any iterator
+   * @param any context
+   * @return Array filtered list unique by the iterator
+   */
+  uniqBy: function(iterator, context) {
+    return this.by(iterator, context).invoke('pluck', 0)
+  },
   
   /**
    * Similar to each but executes each step with a delay
