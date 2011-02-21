@@ -267,6 +267,16 @@
     shrink: function(length) {
       return this.substring(length || 1, this.length - (length || 1));
     },
+    
+    /**
+     * Returns the compressed version of this String
+     * Will trim and reduce more than one whitespace to only one whitespace
+     * 
+     * @return String
+     */
+    compress: function() { 
+      return this.trim().replace(/\s+/g, ' ') 
+    },
 
     /**
      * Modifies this string to begin with a given prefix.
@@ -503,6 +513,7 @@
 
       return re.glue();
     },
+    
     /**
      * @return String this String plus a HTML line break
      */
@@ -512,6 +523,7 @@
       }
     	return this + '<br />';
     },
+    
     /**
      * @return String this String plus a HTML HR
      */
