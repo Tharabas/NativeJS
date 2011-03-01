@@ -133,6 +133,35 @@ Object.extend(Object, {
     }
     return re
   },
+  /**
+   * Returns a subset of the given object
+   * where the keys matched the filter function
+   *
+   * Example:
+   *   var obj = {
+   *     alpha:   1,
+   *     beta:    2,
+   *     gamma:   3,
+   *     delta:   4,
+   *     epsilon: 5
+   *   }
+   *
+   *   // filter keys that are 5 chars long
+   *   Object.filterKeys(obj, function(name) { return name.length == 5 })
+   *   => { alpha: 1, gamma: 3, delta: 4 }
+   *
+   *   // filter keys that end with a
+   *   Object.filterKeys(obj, /a$/)
+   *   => { alpha: 1, beta: 2, gamma: 3, delta: 4 }
+   *
+   * @param Any      o   object to iterate
+   * @param Function fn  filter function
+   * @param Any      ctx context object for the filter function
+   * @return Object filtered object
+  **/
+  filterKeys: function(o, fn, ctx) {
+    return Object.keys(o).filter(fn, ctx).map(function(n) { return n.asKey(o[n]) }).merge()
+  },
   $a: function(o) {
     return Object.map(o, function(_) { return $a(_) })
   },
