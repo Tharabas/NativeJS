@@ -128,6 +128,19 @@
     },
     
     /**
+     * Applies matching groups on a function if this matches
+     *
+     * @param r   RegEx a regular expression to match on this string
+     * @param fn  Function a callback method to be evaluated with the results of the match
+     * @param ctx Any a context object for the callback method
+     * @return result of the called method, or undefined
+     * @see Array#on
+     */
+    onMatch: function(r, fn, ctx) {
+      return $if (this.match(r), 'on', fn, ctx)
+    },
+    
+    /**
      * 
      */
     contains: function(needle) {
