@@ -765,57 +765,7 @@ Object.extend(Array.prototype, {
   	}
   	return re;
   },
-  
-  /**
-   * Checks whether all elements of this array are the same as a compare value.
-   * If the compare value is a function the values of the array
-   * will be passed as the first argument (like in Array.each()).
-   * 
-   * @param compare may be either a value to check agains or an unary boolean return function
-   * @return boolean
-   */
-	isAll: function(compare, context) {
-  	if (Object.isFunction(compare)) {
-  		for (var i = 0; i < this.length; i++) {
-	  		if (!compare.apply(context || this, [this[i]])) {
-	  			return false;
-	  		}
-  		}
-  		return true;
-  	} else {
-  		for (var i = 0; i < this.length; i++) {
-	  		if (this[i] != compare) {
-	  			return false;
-	  		}
-  		}
-  		return true;
-  	}
-  },
-  
-  /**
-   * Nearly the same as Array.isAll, but stops as soon as the first match is found.
-   * 
-   * @param compare may be either a value to check against or an unary boolean return function
-   * @return boolean
-   */
-  hasAny: function(compare, context) {
-  	if (Object.isFunction(compare)) {
-  		for (var i = 0; i < this.length; i++) {
-	  		if (compare.apply(context || this, [this[i]])) {
-	  			return true;
-	  		}
-  		}
-  		return false;
-  	} else {
-  		for (var i = 0; i < this.length; i++) {
-	  		if (this[i] == compare) {
-	  			return true;
-	  		}
-  		}
-  		return false;
-  	}
-  },
-  
+    
   /**
    *
    */
