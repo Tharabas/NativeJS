@@ -330,14 +330,7 @@ Object.extend(Array.prototype, {
    * @return Array the shuffeled version of this array
    */
   shuffle: function() {
-    var i, v, n
-    for (i = this.length - 1; i > 1; i--) {
-      // inlined swap with tmp
-      n = i.ran()
-      v = this[n]
-      this[n] = this[i]
-      this[i] = v
-    }
+    for (var i = this.length - 1; i > 1; i--) this.swap(i, i.ran());
     return this
   },
   
