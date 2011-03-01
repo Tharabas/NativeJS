@@ -648,58 +648,13 @@ Object.extend(Array.prototype, {
   },
   
   /**
-   * contains test whether a specified needle element is part of this array
+   * Tests whether a specified value is part of this array
    * 
-   * @param needle any object that is suspected to be within the array
-   * @return true if the needle is part of the array, false otherwise
+   * @param Any value object that is suspected to be within the array
+   * @return true if the value is part of the array, false otherwise
    */
-  contains: function(needle, regex, part) {
-  	if (Object.isUndefined(regex)) {
-  		regex = false;
-  	}
-  	
-    for (var i = 0; i < this.length; i++) {
-      if (regex) {
-      	var match = needle.exec(this[i]);
-      	if (match != null) {
-      		if (Object.isUndefined(part)) {
-	      		return this[i];
-      		} else {
-      			return match[part];
-      		}
-      	}
-      } else {
-	      if (this[i] == needle) {
-	        return true;
-	      }
-      }
-    }
-    
-    return false;
-  },
-  
-  /**
-   * Returns an array of keys defined in this Object
-   *
-   * @param expr RegEx if given only strings matching this expression will be returned
-   * @return Array
-   */
-  getKeys: function(expr) {
-		var re = [];
-  	
-  	if (Object.isUndefined(expr)) {
-  		for (var e in this) {
-  			re.push(e);
-  		}
-  	} else {
-  		for (var e in this) {
-  			if (e.match(expr) != null) {
-  				re.push(e);
-  			}
-  		}
-  	}
-  	
-		return re;
+  contains: function(value) {
+    return this.any(Math.equal.curry(value))
   },
   
   /**
