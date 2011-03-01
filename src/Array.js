@@ -658,33 +658,6 @@ Object.extend(Array.prototype, {
   },
   
   /**
-   * @return array containing the removed values;
-   */
-  removeValue: function(value, regex) {
-  	if (Object.isUndefined(regex)) {
-  		regex = false;
-  	}
-  	
-  	var re = [];
-  	
-  	for (var i = 0; i < this.length; i++) {
-  		var v = this[i];
-  		if (regex) {
-  			if (Object.isString(v) && value.exec(v) != null) {
-  				re.push(this.splice(i, 1));
-  				i--;
-  			}
-  		} else {
-  			if (v == value) {
-  				re.push(this.splice(i, 1));
-  				i--;
-  			}
-  		}
-  	}
-  	
-  	return re;
-  },
-  /**
    * wrap, just as its subfunctions prefix and suffix, modifies the values of an array.
    * 
    * A wrapped array will only contain string values.
