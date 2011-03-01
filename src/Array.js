@@ -892,6 +892,13 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Delegates to Array.diff(this, other)
+  **/
+  diff: function(other) {
+    return Array.diff(this, other)
+  },
+  
+  /**
    * This is similar to 'inGroupsOf' but separates the array somehow.
    * Reverses the Array.alternate method
    *
@@ -980,5 +987,33 @@ Object.extend(Array, {
       }
     }
     return re
+  },
+  
+  /**
+   * Returns diff information about two arrays,
+   * resulting object contains properties:
+   *   - both:   Array containing values present in both arguments
+   *   - first:  Array containing values only present in the first argument
+   *   - second: Array containing values only present in the second argument
+   * 
+   * Example:
+   *   var a = [1,2,3], b = [3,4,5]
+   *   Array.diff(a,b)
+   *   => { both: [3], first: [1,2], second: [4,5] }
+   * 
+   * @param Array a the source array
+   * @param Array b the target array
+   * @return Object
+  **/
+  diff: function(a, b) {
+    var both = [], first = []
+    
+    a.each(function(v) { (b.indexOf(v) + 1 ? both : first).push(v) })
+    
+    return { 
+      both:   both,
+      first:  first, 
+      second: b.without(both)
+    }
   }
 })
