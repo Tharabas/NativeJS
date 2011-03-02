@@ -774,14 +774,14 @@ Object.extend(Array.prototype, {
    * Reverses the Array.alternate method
    *
    * Example:
-   *    [1,2,3,4,5,6,7,8,9].inColumns(3)
+   *    [1,2,3,4,5,6,7,8,9].inColumnsOf(3)
    * => [ [1,4,7], [2,5,8], [3,6,9] ]
    *
    * All columns will have equal length, empty fields will be filled
-   *    [1,2,3,4,5,6,7,8,9].inColumns(4, 'X')
+   *    [1,2,3,4,5,6,7,8,9].inColumnsOf(4, 'X')
    * => [ [1,5,9], [2,6,'X'], [3,7,'X'], [4,8,'X'] ]
    */
-  inColumns: function(cols, fillWith) {
+  inColumnsOf: function(cols, fillWith) {
     // ensure to grab at least 1 column
     cols = parseInt(cols || 1).max(1)
     if (cols == 1) return [this];
@@ -794,7 +794,7 @@ Object.extend(Array.prototype, {
     for (var i = 0; i < max ;) {
       for (var col = 0; col < cols; col++, i++) {
         // second for is faster than i % cols every time
-        re[col].push(this[i] || fillWith)
+        re[col].push($void(this[i]) ? fillWith : this[i])
       }
     }
     
