@@ -135,6 +135,21 @@ Object.extend(Object, {
   },
   /**
    * Returns a subset of the given object
+   * where the values match the filter function
+   *
+   * @param Any      o   object to iterate
+   * @param Function fn  filter function
+   * @param Any      ctx context object for the filter function
+   *
+  **/
+  filter: function(o, fn, ctx) {
+    fn = fn || Prototype.K
+    return Object.keys(o).map(function(k,i) { 
+      return fn.call(ctx, o[k], i) ? k.asKey(o[k]) : null 
+    }).compact().merge()
+  },
+  /**
+   * Returns a subset of the given object
    * where the keys matched the filter function
    *
    * Example:
