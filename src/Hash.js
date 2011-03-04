@@ -16,45 +16,23 @@ Object.extend(Hash.prototype, {
   /**
    * Returns a Subset where the keys match a filter
    *
-   * @param Function|RegExp n the filter function
-   * @param Any ctx a context for the matcher function
+   * @param Function fn  the filter function
+   * @param Any      ctx a context for the matcher function
    * @return Hash the filtered subset
    */
-  filterKeys: function(n, ctx) {
-    var f = n;
-    if (!Object.isFunction(n)) {
-      f = function(k) { return k.match(n) != null; }
-    }
-    var re = $H();
-    var hash = this;
-    this.keys().each(function(k) { 
-      if (f.apply(ctx, [k])) {
-        re.set(k, hash.get(k));
-      }
-    });
-    return re;
+  filterKeys: function(fn, ctx) {
+    return $H(Object.filterKeys(this._object, fn, ctx))
   },
   
   /**
    * Returns a Subset where the values match a filter
    *
-   * @param Function|RegExp n the filter function
-   * @param Any ctx a context for the matcher function
+   * @param Function fn  the filter function
+   * @param Any      ctx a context for the matcher function
    * @return Hash the filtered subset
    */
-  filterValues: function(n, ctc) {
-    var f = n;
-    if (!Object.isFunction(n)) {
-      f = function(v) { return v.match(n) != null; }
-    }
-    var re = $H();
-    var hash = this;
-    this.each(function(o) { 
-      if (f.apply(ctx, [o.value])) {
-        re.set(o.key, o.value); 
-      }
-    });
-    return re;
+  filterValues: function(fn, ctx) {
+    return $H(Object.filter(this._object, fn, ctx))
   },
   
   /**
