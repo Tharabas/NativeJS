@@ -175,15 +175,15 @@
     },
 
     addClassNames: function(element, names) {
-      names.each(Element.Method.addClassName.curry(element))
+      names.each(Element.Methods.addClassName.curry(element))
     },
 
     removeClassNames: function(element, names) {
-      names.each(Element.Method.removeClassName.curry(element))
+      names.each(Element.Methods.removeClassName.curry(element))
     },
 
     toggleClassNames: function(element, names) {
-      names.each(Element.Method.toggleClassName.curry(element))
+      names.each(Element.Methods.toggleClassName.curry(element))
     },
 
     updateClassNames: function(element, names) {
