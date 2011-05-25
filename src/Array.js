@@ -69,6 +69,18 @@ Object.extend(Array.prototype, {
   cmap: function(fn, ctx) {
     return this.map(fn, ctx).compact()
   },
+
+  /**
+   * Conditional map
+   *
+   * @param Function condition a condition (filter) to test the array elements
+   * @param Function fn        the mapping function
+   * @param Any      context   a context object for both functions
+   * @return Array   the partially mapped array
+   */
+  mapif: function(condition, fn, ctx) {
+    return this.map(function(o,n) { return condition.call(ctx, o, n) ? fn.call(ctx, o, n) : o })
+  },
   
   /**
    * Applies this array on a given function,
