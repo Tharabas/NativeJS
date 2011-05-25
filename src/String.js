@@ -219,7 +219,8 @@
     },
     
     /**
-     * 
+     * @param String needle the string to look for
+     * @return Boolean true when the string is present within this string
      */
     contains: function(needle) {
       // ... the eternal void is part of everything ...
