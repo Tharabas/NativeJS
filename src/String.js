@@ -100,6 +100,15 @@
     },
     
     /**
+     * @param Any compare a comparation value
+     * @return Function a comparator function on a property
+    **/
+    propertyIs: function(compare) {
+      var key = this + ''
+      return function(o) { return o[key] == compare }
+    },
+    
+    /**
      * 
      */
     each: function(f, context) {
