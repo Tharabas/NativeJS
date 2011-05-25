@@ -298,6 +298,24 @@
     	}
     	return i.snap(number);
     },
+    
+    /**
+     * Will 'snap' the number to the nearest v
+     *
+     * @param Number   number the base value for the snapping
+     * @param Number   v      the snapping interval
+     * @param Function f      a snapping function, defaults to Math.round
+     *
+     * Example:
+     *   // snap to the next even number
+     *   snap(3.1415)       => 3
+     *   snap(3.1415, 0.1)  => 3.1
+     *   snap(1337, 100)    => 1300
+     *   snap(42, 5)        => 40
+     *   // snap with ceiling
+     *   snap(42, 5, Math.ceil) => 45
+     * 
+     */
     snap: function(number, v, f) {
       if (Object.isUndefined(f) || !f) {
         f = Math.round;
@@ -307,6 +325,7 @@
       }
       return f(number / v) * v;
     },
+    
     /**
      * @return boolean true when this Number is not greater than max and not smaller than min
      */
