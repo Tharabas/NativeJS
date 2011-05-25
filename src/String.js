@@ -58,6 +58,21 @@
     },
     
     /**
+     * Will return a function that plucks the string contents 
+     * as key from the first argument passed to the returned function
+     *
+     * Example: 
+     *   var lengthPluck = 'length'.pluck()
+     *   lengthPluck([1,2,3]) => 3
+     *
+     * @return Function a plucklike callback method
+    **/
+    pluck: function(compare) {
+      var key = this + ''
+      return function(value) { return value[key] }
+    },
+    
+    /**
      * 
      */
     each: function(f, context) {
