@@ -291,20 +291,24 @@
     },
 
     /**
-     * Just like String.rangeOf this will return positions for all matched needles in an array
+     * Just like String.rangeOf this will return positions for all matched needles in an array.
      *
      * @param String|RegExp|Array needle
+     * @param Boolean allowOverlaps whether match overlaps are allowed, optional, false by default
      * @returns Array[ObjectRange] a list of ObjectRanges
      *
+     * Example: 
+     *   'Abra Kadabra'.rangesOf(/ab/i) => [ObjectRange(0, 1), ObjectRange(8, 9)]
+     * 
      * @see String.rangeOf
      */
-    rangesOf: function(needle) {
+    rangesOf: function(needle, allowOverlaps) {
       var re    = [], 
           index = -1, 
           tmp   = null;
       while ((tmp = this.rangeOf(needle, index + 1))) {
         re.push(tmp)
-        index = tmp.end
+        index = allowOverlaps ? tmp.start: tmp.end
       }
       return re;
     },
