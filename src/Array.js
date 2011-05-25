@@ -412,6 +412,28 @@ Object.extend(Array.prototype, {
   },
   
   /**
+   * Splits this array into several arrays whenever the given function evals to true
+   * The sub arrays contain all previous falsy elements and the first true element
+   *
+   * Example:
+   *    (1).to(20).splitBy(function(v) { return v.sqrt().tail() == 0 })
+   * => [[1], [2,3,4], [5,6,7,8,9], [10,11,12,13,14,15,16], [17,18,19,20]]
+  **/
+  splitBy: function(fn, context) {
+    fn = fn || Prototype.K
+    var re = [], t = []
+    this.each(function(o, i) {
+      t.push(o)
+      if (fn.apply(context, [o, i])) {
+        re.push(t)
+        t = []
+      } 
+    })
+    if (t.length) re.push(t)
+    return re
+  },
+  
+  /**
    * Inserts some elements at a specified index
    *
    * @param index the index to split at
