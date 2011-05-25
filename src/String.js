@@ -73,6 +73,33 @@
     },
     
     /**
+     * Essentially a bigger pluck
+     * Will split the string by . and return a function
+     * that returns the value on an object
+     *
+     * Example:
+     *   var rect = {
+     *     size: {
+     *       width: 50,
+     *       height: 80
+     *     }
+     *   }
+     *  var widthDigger = 'size.width'.dig()
+     *  withDigger(rect) => 50
+     *
+     * @param String|RegExp delimiter a splitter
+     * @return Function a digger callback method
+     */
+    dig: function(delimiter) {
+      var keys = this.split(delimieter || '.')
+      return function(value) {
+        return keys.foldLeft(value, function(object, key) {
+          return $full(object[key], {})
+        })
+      }
+    },
+    
+    /**
      * 
      */
     each: function(f, context) {
