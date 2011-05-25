@@ -109,6 +109,16 @@
     },
     
     /**
+     * @param Callable matcher a evaluation function that will be called on the property
+     * @param Any ctx a context for the matcher function
+     * @return Function a comparator function on a property
+    **/
+    propertyMatching: function(matcher, ctx) {
+      var key = this + ''
+      return function(o, i) { return matcher.call(ctx, o[key], i) }
+    },
+    
+    /**
      * 
      */
     each: function(f, context) {
