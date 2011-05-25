@@ -259,6 +259,11 @@ function $void(object) {
   return typeof object === "undefined"
 }
 
+// tests for undefinedness, may return a fallback object
+function $full(object, fallback) {
+  return typeof object !== 'undefined' ? object : fallback
+}
+
 function $instanceOf(clazz) { 
   return Object.instanceOf(clazz)
 }
