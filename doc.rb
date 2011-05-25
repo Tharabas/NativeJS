@@ -39,7 +39,7 @@ files.each { |filename|
       comment = ""
     end
     
-    comment += "> " + line.gsub(/^\s*\/\*\*?/, '').gsub(/^\s*\* ?/,'').gsub(/^\s*\*+\//, '') if addComment
+    comment += "> " + line.gsub(/^\s*\/\*\*?/, '').gsub(/^\s*\*+\//, '').gsub(/^\s*\* ?/,'') if addComment
     
     addComment = false if line =~ /\*\//
     
