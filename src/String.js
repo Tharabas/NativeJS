@@ -119,7 +119,23 @@
     },
     
     /**
+     * Will return a function that invokes the string contents on the first argument given
+     * any other arguments for the calback will be ignored, but on initialization arguments
+     * may be given
      * 
+     * Example:
+     *   var splitInvocation = 'split'.invoke(',')
+     *   splitInvocation('a,b,c') => ['1','2','3']
+     * 
+     * @return Function an invoker callback method
+    **/
+    invoke: function() {
+      var key  = this + ''
+      var args = $A(arguments)
+      return function(value) { return value[key].apply(value, args) }
+    },
+    
+    /**
      */
     each: function(f, context) {
       f = f || Math.ident;
