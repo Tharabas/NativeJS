@@ -17,13 +17,12 @@
       return c;
     },
     fn: function() {
-      var args = $A(arguments);
-      var def  = args.shift();
-      var fn = Math.ident;
-
-      // depending on the def ... create a function
-
-      return args.length ? fn.apply(window, args) : fn; 
+      var base = this + ''
+      return function() {
+        var args = $A(arguments)
+        var code = 'return ' + base.replace(/_/g, 'arguments[0]()')
+        return (new Function(code))(function() { return args.shift() })
+      }
     },
     asKey: function(string, value) {
       var re = {};
