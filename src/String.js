@@ -136,6 +136,12 @@
     },
     
     /**
+     * Splits this array by , trimming all sub elements
+     * if there is not , within the string, splits by whitespace
+     * Uses the given method on each string (Identity by default)
+     *
+     * @paran Function f function
+     * @param Any      context a context object for the function
      */
     each: function(f, context) {
       f = f || Math.ident;
