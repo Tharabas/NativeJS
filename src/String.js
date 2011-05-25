@@ -144,8 +144,7 @@
      * @param Any      context a context object for the function
      */
     each: function(f, context) {
-      f = f || Math.ident;
-      this.split(this.contains(',') ? /\s*,\s*/ : /\s+/).each(f, context);
+      this.split(this.contains(',') ? /\s*,\s*/ : /\s+/).each(f || Math.ident, context);
     },
     
     /**
@@ -162,17 +161,14 @@
      * @return Array the mapped Strings
      */
     map: function(f, context) {
-      f = f || Math.ident;
-      return this.split(this.contains(',') ? /\s*,\s*/ : /\s+/).map(f, context);
+      return this.split(this.contains(',') ? /\s*,\s*/ : /\s+/).map(f || Math.ident, context);
     },
     
     /**
      * @return Array an array containing each char in this string
      */
     toArray: function() {
-      var a = [];
-      for (var i = 0;  i < this.length; i++) a.push(this[i]);
-      return a;
+      return this.match(/./g)
     },
     
     /**
