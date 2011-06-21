@@ -382,11 +382,7 @@
      * @return this string
      */
     startWith: function(prefix) {
-      if (this.startsWith(prefix)) {
-        return this + '';
-      }
-
-      return prefix + this;
+      return (this.startsWith(prefix) ? '' : prefix) + this
     },
 
     /**
@@ -397,11 +393,7 @@
      * @return this string
      */
     endWith: function(suffix) {
-      if (this.endsWith(suffix)) {
-        return this + '';
-      }
-
-      return this + suffix;
+      return this + (this.endsWith(suffix) ? '' : suffix)
     },
 
     /**
