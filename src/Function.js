@@ -128,6 +128,28 @@ Object.extend(Function.prototype, {
 	},
 	
 	/**
+	 * Logically ands (&&) results of this function and all passed function
+	 */
+	and: function() {
+	  var __methods = $A(arguments).unshift(this)
+	  return function() {
+	    var args = $A(arguments);
+	    return __methods.foldLeft(true, function(a, b) { return a && b.apply(null, args) })
+	  }
+	},
+	
+	/**
+	 * Logically ors (||) results of this function and all passed function
+	 */
+	or: function() {
+	  var __methods = $A(arguments).unshift(this)
+	  return function() {
+	    var args = $A(arguments);
+	    return __methods.foldLeft(false, function(a, b) { return a || b.apply(null, args) })
+	  }
+	},
+
+	/**
 	 * Reversed bind, uses the first argument as context
 	 * Used for Functions that are only available in prototypes,
 	 * like native String or Array Function.
