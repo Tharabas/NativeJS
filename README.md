@@ -1,0 +1,66 @@
+--- 
+NativeJS 
+
+Functional extensions to the JavaScript language.
+
+--- 
+How to run it
+
+Currently you will need at least a ruby installation to build the native.js.
+Just use './build.rb' or 'ruby build.rb' from the root folder and the file will be build.
+
+I'm using the YUI-Compressor (http://developer.yahoo.com/yui/compressor/) as well afterwards,
+to create a native.min.js, but that is not necessary to use the features.
+
+Just include it at the head of your HTML file, like this:
+
+ <script type="text/javascript" src="native.js"></script>
+
+There is a template.html, that demonstrates this.
+
+---
+What is it about?
+
+This Library started as an extension to the Prototype-Framework (www.prototypejs.org)
+I took some of my prototype-independent functions being added to String and Number,
+and combined them with the functional beauty of List (aka Array) Programming.
+
+The Library want's to focus on working with the code in an elegant fashion.
+
+Example:
+Prototype defined the map function on an Array. Map is crucial function in functional programming.
+JavaScript allows you to pass functions as arguments, as everything is an object.
+This let's you create a square sequence like this:
+
+ var baseSequence = [1, 2, 3, 4, 5]
+ var squareFn = function(x) { return x * x }
+ var squareSequence = baseSequence.map(squareFn) => [1, 4, 9, 16, 25]
+
+Now I put a set of default mathematical functions into the already existing Math object,
+like sum, mul, square, ...
+These usually take two arguments (but at least one) and get another code-candy:
+You can use them from a Number as well:
+
+ var x  = 5
+ var x2 = x.square() => 25
+
+In addition to that the reduce and reduceRight functions have been added to Array
+
+ var sum = [1, 2, 3, 4, 5].reduce(function(a, b) { return a + b }) => 15 // a functional Array.sum
+
+This allows some Scala-like processing:
+
+ var sum = (1).to(100).reduce(Math.sum) => 5050 // Gauss knew!
+ 
+ var fac = function(n) { return (1).to(n).reduce(Math.mul) } // functional faculty definition
+
+NOTE: As JavaScript does no recursion optimization (that I'd be aware of) reduce is done iteratively!
+
+---
+Compatibility
+
+Currently I'm testing with Google Chrome , Safari 5.0 and Firefox 4+, no Problems so far.
+Internet Explorer 7-8 should and may work, but I can not recommend it as it's JavaScript Engine
+is simply and impartial slow.
+Did not test on IE 9, yet
+
