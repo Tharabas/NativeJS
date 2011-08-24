@@ -624,15 +624,20 @@
      *
      * @param Object attributes, optional, a set of key+value pairs
      *               if omitted a TextNode will be created
+     * @param Array  elements, a list of elements, 
+     *               that will build the created nodes' content
      * @return HTMLElement
      */
-    node: function(attributes) {
+    node: function(attributes, elements) {
       if ($void(attributes)) {
         return document.createTextNode(this + '')
       }
       var re = document.createElement(this + '')
       Object.keys(attributes || {}).each(function(key) {
         re.setAttribute(key, attributes[key])
+      })
+      $a(elements).each(function(el) {
+        re[Object.isString(el) ? 'appendData' : 'appendChild'](el)
       })
       return re
     },
