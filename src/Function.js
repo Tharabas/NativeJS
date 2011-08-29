@@ -132,6 +132,39 @@ Object.extend(Function.prototype, {
 	},
 	
 	/**
+	 * Returns a weak equal comparator function
+	 * @param Object compare anything to compare the result of the function with
+	 * @return Function a comparator function
+	 */
+	equals: function(compare) {
+	  var __method = this
+	  return function() {
+	    return __method.apply(__method, arguments) == compare
+	  }
+	},
+	
+	/**
+	 * Returns a strong equal comparator function
+	 * @param Object compare anything to compare the result of the function with
+	 * @return Function a comparator function
+	 */
+	is: function(compare) {
+	  var __method = this
+	  return function() {
+	    return __method.apply(__method, arguments) === compare
+	  }
+	},
+
+	/**
+	 * Returns a negated strong equal comparator function
+	 * @param Object compare anything to compare the result of the function with
+	 * @return Function a comparator function
+	 */
+	isnt: function(compare) {
+	  return this.is(compare).not()
+	},
+	
+	/**
 	 * Logically ands (&&) results of this function and all passed function
 	 */
 	and: function() {
@@ -180,6 +213,11 @@ Object.extend(Function.prototype, {
 	  };
 	}
 });
+
+// alias pre to after
+Function.prototype.after = Function.prototype.pre
+// alias post to then
+Function.prototype.then  = Function.prototype.post
 
 Object.extend(Function, {
   arg: function(n) {
