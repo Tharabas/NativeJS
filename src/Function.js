@@ -47,9 +47,11 @@ Object.extend(Function.prototype, {
 	 * Marks the __on attribute of the function
 	 */
 	on: function(n) {
-	  if (n == 'all') n = true;
-	  this.__on = n;
-	  return this;
+	  var __method = this
+	  return Object.extend(
+	    function() { return __method.apply(__method, arguments) }, 
+	    { __on: n == 'all' ? true : n }
+	  )
 	},
 	
 	/**
