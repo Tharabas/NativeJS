@@ -254,6 +254,14 @@ function $arg() {
   }
 };
 
+/**
+ * @param Number or String key of the to-be-plugged value
+ * @param Number index the index to use of the arguments, defaults to 0
+ */
+function $get(key, index) {
+  return function() { return arguments[index || 0][key] }
+}
+
 // as i used it too often ...
 function $void(object) {
   return typeof object === "undefined"
