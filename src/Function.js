@@ -1,6 +1,10 @@
 /**
- * Extension to the generic Function
+ * Extensions to the generic Function
  */
+
+(function() {
+// bof
+  
 Object.extend(Function.prototype, {
   /**
    * Calls a method several times an stores each result an an array
@@ -182,3 +186,6 @@ Object.extend(Function, {
     return function() { return $A(arguments)[n] }
   }
 })
+
+// eof
+})();
