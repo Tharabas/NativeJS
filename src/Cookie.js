@@ -11,33 +11,41 @@
   var _Cookie = function Cookie(name) {
     this.name = name
   }
+  
+  var segment = function() {
+    return document.cookie
+      .split('; ')       // split by ;
+      .map(/(.+)\=(.+)/) // part in 
+      .compact()         // drop non matches
+      .invoke('shifted') // drop the full-match in the results
+  }
+  
+  var first  = $get(0)
+  var second = $get(1)
 
   Object.extend(Cookie, {
     /**
      * Lists all defined cookies
      */
     list: function() {
-      return document.cookie.split('; ').cmap(/(\w+)\=(.+)/).mapOn(String.asKey).merge()
+      return segment().mapOn(String.asKey.after(unescape.on(1))).merge()
     },
     
     /**
      * Lists the names of all defined cookies
      */
     listNames: function() {
-      return document.cookie.split('; ').cmap(/(\w+)\=(.+)/).map($get(1))
+      return segment().map(second)
     },
     
     /**
      * @param name String the name of the cookie to be returned
      */
     get: function(name) {
-      return document.cookie
-        .split(';')                  // split by ;
-        .map(/(\w+)\=(.+)/)          // split those at first =
-        .compact()                   // drop non matched elements
-        .filter($get(1).is(name))    // keep all, where first element is name
-        .map($get(2).post(unescape)) // return the second value, unescaped
-        [0]                          // return the first element
+      return segment()
+        .filter(first.is(name))     // keep all, where first element is name
+        .map(second.then(unescape)) // return the second value, unescaped
+        [0]                         // return the first element
     },
     
     /**
