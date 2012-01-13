@@ -6,7 +6,7 @@ var Point = Class.create({
 		if (Object.isUndefined(x)) {
 			this.x = 0;
 			this.y = 0;
-		} else if (Object.isArray(x)) {
+		} else if (!$void(x[0]) && !$void(x[1])) {
 			this.x = x[0];
 			this.y = x[1];
 		} else if ((x instanceof Point) || (typeof(x) == 'object')) {
