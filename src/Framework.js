@@ -1,5 +1,4 @@
-/**!
- * Rogue Coding's native.js
+/*!Rogue Coding's native.js
  *
  * Generic extensions to JavaScript Prototypes
  *
@@ -10,6 +9,8 @@
  * to takeover only a part of their framework
  *
  * @version 1.5
+ */
+/**
  * @requires Basic
  */
  
