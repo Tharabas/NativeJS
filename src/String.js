@@ -628,19 +628,49 @@
      *               that will build the created nodes' content
      * @return HTMLElement
      */
-    node: function(attributes, elements) {
-      if ($void(attributes)) {
-        return document.createTextNode(this + '')
-      }
-      var re = document.createElement(this + '')
-      Object.keys(attributes || {}).each(function(key) {
-        re.setAttribute(key, attributes[key])
-      })
-      $a(elements).each(function(el) {
-        re[Object.isString(el) ? 'appendData' : 'appendChild'](el)
-      })
-      return re
-    },
+     node: function(attributes, elements) {
+       if ($void(attributes)) {
+         return document.createTextNode(this + '')
+       }
+       var re = document.createElement(this + ''),
+           append = function(child) { 
+             if (Object.isString(child)) {
+               re.insert({ bottom: child })
+             } else {
+               re.appendChild(child)
+             }
+           };
+       Object.keys(attributes || {}).each(function(key) {
+         var value = attributes[key]
+         // special case of key handling
+         switch (key) {
+           case 'cls':
+           case 'class':
+             re.addClassName(value)
+             break;
+           case 'children':
+             $a(value).each(append)
+             break;
+           case 'on':
+           case 'listeners':
+             // expect value to be an object
+             Object.keys(value || {}).each(function(eventKey) {
+               re.on(eventKey, value[eventKey])
+             })
+             break;
+           default:
+             var setter = key.setter(re)
+             if (setter && setter.call) {
+               setter.call(re, attributes[key])
+             } else {
+               re.setAttribute(key, attributes[key])
+             }
+           break;
+         }
+       })
+       $a(elements).each(append)
+       return re
+     },
 
     /**
      * Returns a getter Name for this string.
