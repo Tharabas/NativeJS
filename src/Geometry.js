@@ -9,6 +9,9 @@ var Point = Class.create({
 		} else if (!$void(x[0]) && !$void(x[1])) {
 			this.x = x[0];
 			this.y = x[1];
+		} else if (x instanceof Element.Offset) {
+		  this.x = x.left;
+		  this.y = x.top;
 		} else if ((x instanceof Point) || (typeof(x) == 'object')) {
 			this.x = x.x;
 			this.y = x.y;
