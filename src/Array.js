@@ -567,14 +567,12 @@ Object.extend(Array.prototype, {
   
   /**
    * Returns the index of a comparison in this array
-   * Even though there is a native Array.indexOf this will replace that
-   * as the native version does not support function comparison
    * 
    * @param Any compare
    * @param Number afterIndex, optional
    * @return Number integer number, -1 if no match was found, the first index otherwise
    */
-  indexOf: function(compare, afterIndex) {
+  indexOfMatch: function(compare, afterIndex) {
     if (Object.isUndefined(afterIndex)) afterIndex = -1;
     var fn = Object.isFunction(compare) 
       ? compare
