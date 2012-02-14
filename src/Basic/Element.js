@@ -24,7 +24,7 @@ if (Object.isUndefined(window.$)) {
 
   /*--------------------------------------------------------------------------*/
 
-  if (!Node) var Node = { };
+  if (!Node) var Node = window.Node = { };
 
   if (!Node.ELEMENT_NODE) {
     Object.extend(Node, {
@@ -3145,7 +3145,7 @@ if (Object.isUndefined(window.$)) {
   window.Sizzle = Prototype._original_property;
   delete Prototype._original_property;
 
-  var Form = {
+  var Form = window.Form = {
     reset: function(form) {
       form = $(form);
       form.reset();
@@ -3351,9 +3351,9 @@ if (Object.isUndefined(window.$)) {
 
   /*--------------------------------------------------------------------------*/
 
-  var Field = Form.Element;
+  var Field = window.Field = Form.Element;
 
-  var $F = Form.Element.Methods.getValue;
+  var $F = window.$F = Form.Element.Methods.getValue;
 
   /*--------------------------------------------------------------------------*/
 
@@ -4060,9 +4060,9 @@ if (Object.isUndefined(window.$)) {
     }
   };
 
-  var $continue = new Error('"throw $continue" is deprecated, use "return" instead');
+  var $continue = window.$continue = new Error('"throw $continue" is deprecated, use "return" instead');
 
-  var Position = {
+  var Position = window.Position = {
     includeScrollOffsets: false,
 
     prepare: function() {
